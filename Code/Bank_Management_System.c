@@ -31,8 +31,10 @@ typedef struct {
 
 typedef struct {
     unsigned long long account_no;
-    char *name, email, phone;
-    int balance;
+    char *name;
+    char *email;
+    char *phone;
+    float balance;
     date date_opened;
     transfer_details recent_transfers[5];
 }account;

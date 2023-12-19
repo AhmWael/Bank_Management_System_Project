@@ -11,6 +11,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdbool.h>
 
 bool logged_in = 0;
@@ -50,23 +51,24 @@ int main()
 }
 
 void menu() {
-    printf("Welcome to the main menu.\n");
     if (!logged_in) {
         printf("To login enter 1\n");
         printf("To quit enter 2\n");
-        int input;
-        scanf("%d", &input);
-        while ((input != 1) && (input != 2)) {
-            printf("Invalid input! You must enter either 0 or 1.\n");
+        char input[100] = "";
+        //fflush(stdin);
+        gets(input);
+        while ((strcmp(input, "1") != 0) && (strcmp(input, "2") != 0)) {
+            printf("Invalid input! You must enter either 1 or 2.\n");
             printf("To login enter 1\n");
             printf("To quit enter 2\n");
-            scanf("%d", &input);
+            //fflush(stdin);
+            gets(input);
         }
-        if (input == 1) {
+        if (input[0] == '1') {
             printf("logging in\n"); // should be replaced with the function login();
             logged_in = 1; // when login() is created this line should be executed when username and password match
         }
-        if (input == 2)
+        if (input[0] == '2')
             quit();
         return ;
     }
@@ -82,10 +84,35 @@ void menu() {
     printf("To print data of all accounts, enter 10\n");
     printf("To log out, enter 11\n");
     printf("To quit the program entirely, enter 12\n");
-    int input;
-    scanf("%d", &input);
-    while ((input < 1) || (input > 12)) {
-        printf("Invalid input! Input should be between 1 and 12\n");
+    char inputs[100] = "";
+    int i;
+    bool contain_char = 0, bad_input = 1;
+    while (bad_input) {
+        contain_char = 0;
+        gets(inputs);
+        for (i = 0; inputs[i] != '\0'; i ++) {
+            if ((inputs[i] == '-') && (i == 0))
+                continue ;
+            if (!isdigit(inputs[i])) {
+                contain_char = 1;
+                break ;
+            }
+        }
+        if (contain_char) {
+            printf("Invalid input! Input should only consist of digits\n");
+        }
+        else {
+            if ((strcmp(inputs, "1") == 0) || (strcmp(inputs, "2") == 0) || (strcmp(inputs, "3") == 0)
+                || (strcmp(inputs, "4") == 0) || (strcmp(inputs, "5") == 0) || (strcmp(inputs, "6") == 0)
+                || (strcmp(inputs, "7") == 0) || (strcmp(inputs, "8") == 0) || (strcmp(inputs, "9") == 0)
+                || (strcmp(inputs, "10") == 0) || (strcmp(inputs, "11") == 0) || (strcmp(inputs, "12") == 0)) {
+                    bad_input = 0;
+                    continue ;
+                }
+            else {
+                printf("Invalid input! Input should be between 1 and 12\n");
+            }
+        }
         printf("To add an account, enter 1\n");
         printf("To delete an account, enter 2\n");
         printf("To modify the data of an account, enter 3\n");
@@ -98,7 +125,10 @@ void menu() {
         printf("To print data of all accounts, enter 10\n");
         printf("To log out, enter 11\n");
         printf("To quit the program entirely, enter 12\n");
-        scanf("%d", &input);
+    }
+    int input = 0;
+    for (i = 0; inputs[i] != '\0'; i ++) {
+        input = input * 10 + inputs[i] - '0';
     }
     switch (input) {
         // all the print statements here are just temporary place holders for the actual functions
@@ -121,14 +151,16 @@ void menu() {
 void log_out() {
     printf("Are you sure you want to log out?\n");
     printf("Enter 1 to confirm logging out or 0 if you want to return.\n");
-    int conf;
-    scanf("%d", &conf);
-    while ((conf != 1) && (conf != 0)) {
+    char conf[100] = "";
+    //fflush(stdin);
+    gets(conf);
+    while ((strcmp(conf, "1") != 0) && (strcmp(conf, "0") != 0)) {
         printf("Invalid input! You must enter either 0 or 1.\n");
         printf("Enter 1 to confirm logging out or 0 if you want to return.\n");
-        scanf("%d", &conf);
+        //fflush(stdin);
+        gets(conf);
     }
-    if (conf) {
+    if (conf[0] == '1') {
         logged_in = 0;
         printf("Logging out\nGoodbye + employee name\n"); // should print the username of employee
     }
@@ -138,14 +170,16 @@ void log_out() {
 void quit() {
     printf("Are you sure you want to quit?\n");
     printf("Enter 1 to confirm quitting or 0 if you want to return.\n");
-    int conf;
-    scanf("%d", &conf);
-    while ((conf != 1) && (conf != 0)) {
+    char conf[100] = "";
+    //fflush(stdin);
+    gets(conf);
+    while ((strcmp(conf, "1") != 0) && (strcmp(conf, "0") != 0)) {
         printf("Invalid input! You must enter either 0 or 1.\n");
         printf("Enter 1 to confirm quitting or 0 if you want to return.\n");
-        scanf("%d", &conf);
+        //fflush(stdin);
+        gets(conf);
     }
-    if (conf) {
+    if (conf[0] == '1') {
         printf("Quitting the program.\nGoodbye");
         exit(0);
     }

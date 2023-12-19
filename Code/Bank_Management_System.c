@@ -17,7 +17,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 bool logged_in = 0;
 
 typedef struct {
-    int month:4, year;
+    unsigned month:4, year;
 }date;
 
 typedef struct {
@@ -26,19 +26,21 @@ typedef struct {
 }transfer_details;
 
 typedef struct {
-    char* username, password;
+    char *username, *password;
 }employee;
 
 typedef struct {
     unsigned long long account_no;
-    char *name;
-    char *email;
-    char *phone;
-    float balance;
+    char *name, *email, *phone;
+    double balance;
     date date_opened;
     transfer_details recent_transfers[5];
 }account;
 
+
+date *constDate(int month, int year);
+void setDate(account *a, int month, int year);
+void printAccount(account *a);
 void menu();
 void log_out();
 void quit();
@@ -50,6 +52,29 @@ int main()
     }
 
     return 0;
+}
+
+date *constDate(int month, int year)
+{
+    date *d = malloc(sizeof(date));
+    d->month = month;
+    d->year = year;
+    return d;
+}
+
+void setDate(account *a, int month, int year)
+{
+    date *d = constDate(month, year);
+    a->date_opened = *d;
+}
+
+void printAccount(account *a){
+    printf("\nAccount Number : %lld\n", a->account_no);
+    printf("Name: %s\n", a->name);
+    printf("E-mail : %s\n", a->email);
+    printf("Balance: %.2lf\n", a->balance);
+    printf("Mobile: %s\n", a->phone);
+    printf("Date Opened: %d-%d\n", a->date_opened.month, a->date_opened.year);// change format of printing date
 }
 
 void menu() {

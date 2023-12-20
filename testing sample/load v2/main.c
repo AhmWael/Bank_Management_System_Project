@@ -86,7 +86,7 @@ void distAcc(account *p)
 
 account* decodeText(char* line)
 {
-    unsigned long long accNum = atoi(strtok(line, ","));
+    unsigned long long accNum = atoll(strtok(line, ","));
     char *name = strtok(NULL, ",");
     char *email = strtok(NULL, ",");
     double balance = strtod(strtok(NULL, ","), NULL);

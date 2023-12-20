@@ -94,7 +94,6 @@ account* decodeText(char* line)
     date date_opened;
     date_opened.month = atoi(strtok(NULL, "-"));
     date_opened.year =  atoi(strtok(NULL, ","));
-    //setDate(&date_opened, atoi(strtok(NULL, "-")), atoi(strtok(NULL, ",")));
 
     return constAcc(accNum, name, email, balance, phone, date_opened);
 }
@@ -118,7 +117,7 @@ void load(account** accounts, int *numRec)
         (*numRec)++;
     }
 
-    printf("num of acc = %d\n", *numRec);
+    //printf("num of acc = %d\n", *numRec);  for testing delete later
 
 
     *accounts = malloc((*numRec) * sizeof(account));
@@ -147,7 +146,7 @@ void unload(account** accounts, int numRec)
     {
         distAcc(accounts[i]);
     }
-    //free(*accounts);
+    //free(*accounts); //not working returns error(returned -1073740940) FIX LATER
 }
 
 int main()

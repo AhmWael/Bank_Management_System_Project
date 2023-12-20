@@ -37,7 +37,11 @@ typedef struct {
     transfer_details recent_transfers[5];
 }account;
 
-
+account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
+void distAcc(account *p);
+account* decodeText(char* line);
+void load(account** accounts, int *numRec);
+void unload(account** accounts, int numRec);
 date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
 void printAccount(account *a);
@@ -47,11 +51,120 @@ void quit();
 
 int main()
 {
+    /*
+    //{FOR TESTING LOAD}
+
+    account** accounts;
+    int num_acc;
+    load(accounts, &num_acc);  //loads accounts
+    int i;
+    for (i = 0; i < num_acc; i++)
+    {
+        printAccount(accounts[i]);  //prints all accounts
+    }
+    unload(accounts, num_acc);  //unloads accounts
+    */
+
     while (1) {
         menu();
     }
 
     return 0;
+}
+
+account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened)
+{
+    account* p = malloc(sizeof(account));
+
+    p->account_no = account_no;
+
+    p->name = malloc(strlen(name) + 1);
+    strcpy(p->name, name);
+
+    p->email = malloc(strlen(email) + 1);
+    strcpy(p->email, email);
+
+    p->balance = balance;
+
+    p->phone = malloc(strlen(phone) + 1);
+    strcpy(p->phone, phone);
+
+    p->date_opened = date_opened;
+
+    return p;
+}
+
+void distAcc(account *p)
+{
+    free(p->name);
+    free(p->email);
+    free(p->phone);
+    free(p);
+}
+
+account* decodeText(char* line)
+{
+    unsigned long long accNum = atoll(strtok(line, ","));
+    char *name = strtok(NULL, ",");
+    char *email = strtok(NULL, ",");
+    double balance = strtod(strtok(NULL, ","), NULL);
+    char *phone = strtok(NULL, ",");
+    date date_opened;
+    date_opened.month = atoi(strtok(NULL, "-"));
+    date_opened.year =  atoi(strtok(NULL, ","));
+
+    return constAcc(accNum, name, email, balance, phone, date_opened);
+}
+
+void load(account** accounts, int *numRec)
+{
+    FILE* fp;
+    fp = fopen("accounts.txt", "r");
+    if(!fp)
+    {
+        printf("File not found");
+        return;
+    }
+
+    char record[100];
+    rewind(fp);
+    *numRec = 0;
+    while(fgets(record, sizeof(record), fp))
+    {
+        if (record[0] == '\n') continue; //skip empty line
+        (*numRec)++;
+    }
+
+    //printf("num of acc = %d\n", *numRec);  for testing delete later
+
+
+    *accounts = malloc((*numRec) * sizeof(account));
+
+    rewind(fp);
+    int i;
+    for (i = 0; i < *numRec; i++)
+    {
+        if(!fgets(record, sizeof(record), fp)) break;
+
+        if (record[0] == '\n') //skip empty line
+        {
+            i--;
+            continue;
+        }
+        accounts[i] = decodeText(record);
+    }
+
+    fclose(fp);
+}
+
+void unload(account** accounts, int numRec)
+{
+    int i;
+    for (i = 0; i < numRec; i++)
+    {
+        distAcc(accounts[i]);
+    }
+    //free(*accounts); //not working returns error(returned -1073740940) FIX LATER
 }
 
 date *constDate(int month, int year)
@@ -66,6 +179,7 @@ void setDate(account *a, int month, int year)
 {
     date *d = constDate(month, year);
     a->date_opened = *d;
+    free(d);
 }
 
 void printAccount(account *a){

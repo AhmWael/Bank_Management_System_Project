@@ -55,50 +55,58 @@ account* decodeText(char* line)
     return constAcc(accNum, name, email);
 }
 
-void load()
+void load(account** accounts, int *numRec)
 {
     FILE* fp;
     fp = fopen("accounts.txt", "r");
     if(!fp)
     {
         printf("File not found");
-        fclose(fp);
         return;
     }
 
     char record[100];
     rewind(fp);
-    int numRec = 0;
-    while(fgets(record, sizeof(record), fp))  numRec++;
+    *numRec = 0;
+    while(fgets(record, sizeof(record), fp))  (*numRec)++;
 
-    account** loaded_accs = malloc(numRec * sizeof(account));
+    *accounts = malloc((*numRec) * sizeof(account));
 
     rewind(fp);
     int i;
-    for (i = 0; i < numRec; i++)
+    for (i = 0; i < *numRec; i++)
     {
         if(!fgets(record, sizeof(record), fp)) break;
-        loaded_accs[i] = decodeText(record);
+        accounts[i] = decodeText(record);
     }
 
-    for (i = 0; i < numRec; i++)
-    {
-        printf("Acc num = %lld, name = %s, email = %s\n", loaded_accs[i]->account_no, loaded_accs[i]->name, loaded_accs[i]->email);
-    }
-
-    for (i = 0; i < numRec; i++)
-    {
-        distAcc(loaded_accs[i]);
-    }
-    free(loaded_accs);
+    fclose(fp);
 }
 
-
-
+void unload(account** accounts, int numRec)
+{
+    int i;
+    for (i = 0; i < numRec; i++)
+    {
+        distAcc(accounts[i]);
+    }
+    free(*accounts);
+}
 
 int main()
 {
-    load();
+    account** accounts;
+    int num_acc;
+
+    load(accounts, &num_acc);
+
+    int i;
+    for (i = 0; i < num_acc; i++)
+    {
+        printf("Acc num = %llu, name = %s, email = %s\n", accounts[i]->account_no, accounts[i]->name, accounts[i]->email);
+    }
+
+    unload(accounts, num_acc);
 
     return 0;
 }

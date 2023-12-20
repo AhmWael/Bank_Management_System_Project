@@ -37,6 +37,7 @@ typedef struct {
     transaction_details recent_transfers[5];
 }account;
 
+void login();
 account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
 void distAcc(account *p);
 account* decodeText(char* line);
@@ -207,7 +208,7 @@ void menu() {
             gets(input);
         }
         if (input[0] == '1') {
-            printf("logging in\n"); // should be replaced with the function login();
+            login(); // should be replaced with the function login();
             logged_in = 1; // when login() is created this line should be executed when username and password match
         }
         if (input[0] == '2')
@@ -428,4 +429,47 @@ void quit() {
         exit(0);
     }
     printf("Quitting the program has been cancelled\n");
+}
+void login() {
+    FILE *fptr;
+    int i=0, flagu=0,flagp=0;
+    char *c = malloc(100);
+    char *x = malloc(50);
+    char*pass=malloc(50);
+    char*token;
+    fptr = fopen("users.txt", "r");
+    if (fptr == NULL) {
+        printf("Error opening file");
+        exit(1);
+    }
+    do { rewind(fptr);                //used to reset pointer to beggining of file
+        printf("Enter username:");
+        scanf("%s", x);
+        i=1;
+        while(i&&!feof(fptr)){
+        fgets(c,100,fptr);
+        token=strtok(c," ");           //used to seperate password and username
+        i=strcmp(token,x);}
+        if(!i){
+            flagu=1;
+            token=strtok(NULL," \n");   //checks second part of string
+            do{
+            printf("Enter password:");
+            scanf("%s",pass);
+            if(strcmp(token,pass))
+            {
+             printf("invalid password\n");
+            }
+            else{
+          flagp=1;
+            break;}}
+            while(!flagp);
+        }
+        else printf("invalid username\n");
+    } while (!flagu);
+
+
+    fclose(fptr);
+    free(c);
+    free(x);
 }

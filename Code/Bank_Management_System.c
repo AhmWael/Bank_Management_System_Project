@@ -48,6 +48,7 @@ void load(account*** accounts, int *numRec);
 void unload(account*** accounts, int numRec);
 date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
+void query_search();
 void printAccount(account *a);
 void menu();
 void report();
@@ -66,10 +67,10 @@ int main()
         printAccount(accounts[i]);  //prints all accounts
     }
     */
-
-    while (1) {
+    query_search(); //for testing query search
+    /*while (1) {
         menu();
-    }
+    }*/
 
     unload(&accounts, num_acc);  //unloads accounts
 
@@ -185,6 +186,45 @@ void setDate(account *a, int month, int year)
     free(d);
 }
 
+void query_search()
+{
+    unsigned long long account_no;
+    account* temp;
+    int i, pass, sorted=0;
+    for (pass = 1; pass < num_acc && !sorted; pass++)
+    {
+        sorted = 1;
+        for (i = 0; i < num_acc - pass; i++)
+        {
+            if (accounts[i]->account_no > accounts[i+1]->account_no)
+            {
+                temp = accounts[i];
+                accounts[i] = accounts[i+1];
+                accounts[i+1] = temp;
+                sorted = 0;
+            }
+
+        }
+    }
+    //distAcc(temp);     //fix later
+    printf("Enter account number: ");
+    scanf("%llu", &account_no);
+    int low = 0, mid, high = num_acc-1, found = 0;
+    while (!found && low <= high)
+    {
+        mid = (high + low) / 2;
+        if (account_no == accounts[mid]->account_no)
+            found = 1;
+        else if (account_no < accounts[mid]->account_no)
+            high = mid - 1;
+        else
+            low = mid + 1;
+    }
+    if (!found)
+        printf("The Specified Account is not found!");
+    else
+        printAccount(accounts[mid]);
+}
 void printAccount(account *a){
     printf("\nAccount Number : %lld\n", a->account_no);
     printf("Name: %s\n", a->name);

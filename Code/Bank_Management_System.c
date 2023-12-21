@@ -15,6 +15,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 #include <stdbool.h>
 
 bool logged_in = 0;
+int num_acc = 0;
 
 typedef struct {
     unsigned month:4, year;
@@ -37,6 +38,8 @@ typedef struct {
     transaction_details recent_transfers[5];
 }account;
 
+account** accounts = NULL;
+
 void login();
 account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
 void distAcc(account *p);
@@ -53,22 +56,22 @@ void quit();
 
 int main()
 {
-
-    //{FOR TESTING LOAD}
-    /*
-    account** accounts;
-    int num_acc;
     load(&accounts, &num_acc);  //loads accounts
+
+    /*
+    //{FOR TESTING LOAD}
     int i;
     for (i = 0; i < num_acc; i++)
     {
         printAccount(accounts[i]);  //prints all accounts
     }
-    unload(&accounts, num_acc);  //unloads accounts
     */
+
     while (1) {
         menu();
     }
+
+    unload(&accounts, num_acc);  //unloads accounts
 
     return 0;
 }
@@ -136,7 +139,7 @@ void load(account*** accounts, int *numRec)
         (*numRec)++;
     }
 
-    printf("num of acc = %d\n", *numRec);  //for testing delete later
+    //printf("num of acc = %d\n", *numRec);  //for testing delete later
 
     *accounts = (account**)malloc((*numRec) * sizeof(account*));
 

@@ -299,7 +299,7 @@ void printAccount(account *a){
     printf("\nAccount Number : %lld\n", a->account_no);
     printf("Name: %s\n", a->name);
     printf("E-mail : %s\n", a->email);
-    printf("Balance: %.2lf\n", a->balance);
+    printf("Balance: %.2lf\n $", a->balance);
     printf("Mobile: %s\n", a->phone);
     printf("Date Opened: ");
     switch (a->date_opened.month)

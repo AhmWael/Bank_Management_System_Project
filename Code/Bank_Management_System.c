@@ -41,8 +41,8 @@ void login();
 account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
 void distAcc(account *p);
 account* decodeText(char* line);
-void load(account** accounts, int *numRec);
-void unload(account** accounts, int numRec);
+void load(account*** accounts, int *numRec);
+void unload(account*** accounts, int numRec);
 date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
 void printAccount(account *a);
@@ -53,20 +53,19 @@ void quit();
 
 int main()
 {
-    /*
-    //{FOR TESTING LOAD}
 
+    //{FOR TESTING LOAD}
+    /*
     account** accounts;
     int num_acc;
-    load(accounts, &num_acc);  //loads accounts
+    load(&accounts, &num_acc);  //loads accounts
     int i;
     for (i = 0; i < num_acc; i++)
     {
         printAccount(accounts[i]);  //prints all accounts
     }
-    unload(accounts, num_acc);  //unloads accounts
+    unload(&accounts, num_acc);  //unloads accounts
     */
-
     while (1) {
         menu();
     }
@@ -118,7 +117,7 @@ account* decodeText(char* line)
     return constAcc(accNum, name, email, balance, phone, date_opened);
 }
 
-void load(account** accounts, int *numRec)
+void load(account*** accounts, int *numRec)
 {
     FILE* fp;
     fp = fopen("accounts.txt", "r");
@@ -137,10 +136,9 @@ void load(account** accounts, int *numRec)
         (*numRec)++;
     }
 
-    //printf("num of acc = %d\n", *numRec);  for testing delete later
+    printf("num of acc = %d\n", *numRec);  //for testing delete later
 
-
-    *accounts = malloc((*numRec) * sizeof(account));
+    *accounts = (account**)malloc((*numRec) * sizeof(account*));
 
     rewind(fp);
     int i;
@@ -153,20 +151,20 @@ void load(account** accounts, int *numRec)
             i--;
             continue;
         }
-        accounts[i] = decodeText(record);
+        (*accounts)[i] = decodeText(record);
     }
 
     fclose(fp);
 }
 
-void unload(account** accounts, int numRec)
+void unload(account*** accounts, int numRec)
 {
     int i;
     for (i = 0; i < numRec; i++)
     {
-        distAcc(accounts[i]);
+        distAcc((*accounts)[i]);
     }
-    //free(*accounts); //not working returns error(returned -1073740940) FIX LATER
+    free(*accounts);
 }
 
 date *constDate(int month, int year)

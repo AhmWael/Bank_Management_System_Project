@@ -49,6 +49,7 @@ void unload(account*** accounts, int numRec);
 date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
 void query_search();
+void advanced_search();
 void printAccount(account *a);
 void menu();
 void report();
@@ -67,10 +68,10 @@ int main()
         printAccount(accounts[i]);  //prints all accounts
     }
     */
-    query_search(); //for testing query search
-    /*while (1) {
+    //query_search(); //for testing query search
+    while (1) {
         menu();
-    }*/
+    }
 
     unload(&accounts, num_acc);  //unloads accounts
 
@@ -225,6 +226,75 @@ void query_search()
     else
         printAccount(accounts[mid]);
 }
+
+void advanced_search(){
+    printf("Enter keyword: ");
+    char key[30];
+    gets(key);
+    while(!((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= '0' && key[0] <= '9'))){
+        printf("Invalid input, please enter keyword starting with a letter or a number only: ");
+        gets(key);
+    }
+    printf("\nSearching for \"%s\"\n", key);
+    int i, char_count = 0, search_crit = 0;
+    if(key[0] >= '0' && key[0] <= '9'){
+        for(i = 0;i<strlen(key);i++)
+            if(!(key[i] >= '0' && key[i] <= '9')){
+                char_count = 1;
+                break;
+            }
+        if(!char_count)
+            search_crit = 1;
+    }
+    else
+        search_crit = 2;
+
+    if(search_crit == 1){ // Search in account_number, phone
+        bool found = 0;
+        printf("Search Results: \n\n");
+
+        int i;
+        for(i = 0;i<num_acc;i++){
+            char account_no_str[11];
+            snprintf(account_no_str, sizeof(account_no_str), "%llu", accounts[i]->account_no);
+
+            if(strstr(account_no_str, key) || strstr(accounts[i]->phone, key)){
+                printAccount(accounts[i]);
+                printf("\n");
+                found = 1;
+            }
+        }
+        if(!found)
+            printf("\nNo match found.\nTry entering different keyword.\n");
+    }
+    else if(search_crit == 2){ // Search in name, email
+        bool found = 0;
+
+        int i;
+        for(i = 0;i<num_acc;i++){
+            char *name_str = accounts[i]->name;
+            char *mail_str = accounts[i]->email;
+
+            int j;
+            for(j = 0; name_str[j]; j++){
+              name_str[j] = tolower(name_str[j]);
+            }
+
+            for(j = 0; mail_str[j]; j++){
+              mail_str[j] = tolower(mail_str[j]);
+            }
+
+            if(strstr(name_str, key) || strstr(mail_str, key)){
+                printAccount(accounts[i]);
+                printf("\n");
+                found = 1;
+            }
+        }
+        if(!found)
+            printf("\nNo match found.\nTry entering different keyword.\n");
+    }
+}
+
 void printAccount(account *a){
     printf("\nAccount Number : %lld\n", a->account_no);
     printf("Name: %s\n", a->name);
@@ -337,7 +407,7 @@ void menu() {
         case 2: printf("Deleting an account\n"); break;
         case 3: printf("Modifying account\n"); break;
         case 4: printf("Searching for an account\n"); break;
-        case 5: printf("Advanced searching\n"); break;
+        case 5: printf("Advanced searching\n"); advanced_search(); break;
         case 6: printf("Withdrawing money\n"); break;
         case 7: printf("Depositing money\n"); break;
         case 8: printf("Transferring money\n"); break;

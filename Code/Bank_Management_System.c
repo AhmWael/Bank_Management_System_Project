@@ -191,7 +191,23 @@ void printAccount(account *a){
     printf("E-mail : %s\n", a->email);
     printf("Balance: %.2lf\n", a->balance);
     printf("Mobile: %s\n", a->phone);
-    printf("Date Opened: %d-%d\n", a->date_opened.month, a->date_opened.year);// change format of printing date
+    printf("Date Opened: ");
+    switch (a->date_opened.month)
+        {
+            case 1: printf("January"); break;
+            case 2: printf("February"); break;
+            case 3: printf("March"); break;
+            case 4: printf("April"); break;
+            case 5: printf("May"); break;
+            case 6: printf("June"); break;
+            case 7: printf("July"); break;
+            case 8: printf("August"); break;
+            case 9: printf("September"); break;
+            case 10: printf("October"); break;
+            case 11: printf("November"); break;
+            case 12: printf("December"); break;
+        }
+    printf(" %d\n", a->date_opened.year);
 }
 
 void menu() {

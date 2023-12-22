@@ -618,7 +618,7 @@ void log_out() {
     }
     if (conf[0] == '1') {
         logged_in = 0;
-        printf("Logging out\nGoodbye + employee name\n"); // should print the username of employee
+        printf("Logging out\nGoodbye %s\n",current_employee.username); // should print the username of employee
     }
     printf("Logging out has been cancelled\n");
 }
@@ -642,8 +642,9 @@ void quit() {
     printf("Quitting the program has been cancelled\n");
 }
 void login() {
+    employee current_employee;
     FILE *fptr;
-    int i=0, flagu=0,flagp=0;
+    int i=0, flagu=0,flagp=0,inv_p=0,inv_u=0;
     char *c = malloc(100);
     char *x = malloc(50);
     char*pass=malloc(50);
@@ -663,22 +664,31 @@ void login() {
         i=strcmp(token,x);}
         if(!i){
             flagu=1;
-            token=strtok(NULL," \n");   //checks second part of string
+            current_employee.username=x;
+            token=strtok(NULL," \n"); //checks second part of string
             do{
             printf("Enter password:");
             scanf("%s",pass);
             if(strcmp(token,pass))
             {
              printf("invalid password\n");
+                inv_p++;
             }
             else{
           flagp=1;
+                current_employee.password=pass;
             break;}}
-            while(!flagp);
+            while(!flagp&&();
+            if(inv_p==5){
+                printf("too many invalid passwords have been entered\nQuitting the program");
+                exit(3);}
         }
-        else printf("invalid username\n");
+        else {printf("invalid username\n");
+              inv_u++;}
     } while (!flagu);
-
+    if(inv_u==5){
+    printf("too many invalid usernames have been entered\nQuitting the program");
+    exit(3);}
 
     fclose(fptr);
     free(c);

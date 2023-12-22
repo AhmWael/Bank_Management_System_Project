@@ -57,6 +57,7 @@ int SortByNum(const void *a,const void *b);
 int SortByName(const void *a,const void *b);
 int SortByDate(const void *a,const void *b);
 int SortByBalance(const void *a,const void *b);
+void modify_acc();
 void printAccount(account *a);
 void menu();
 void report();
@@ -309,6 +310,113 @@ void advanced_search(){
         }
         if(!found)
             printf("\nNo match found.\nTry entering different keyword.\n");
+    }
+}
+
+void modify_acc()
+{
+    qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
+    unsigned long long account_no;
+    printf("Enter account number: ");
+    scanf("%llu%*c", &account_no);
+    int acc_index;
+    int found = binary_search(account_no,&acc_index);
+    if (!found)
+        printf("The Specified Account is not found!");
+    else
+    {
+        int field;
+        do
+        {
+            printf("To modify name enter 1 \n");
+            printf("To modify e-mail address enter 2 \n");
+            printf("To modify mobile enter 3 \n");
+            field = readInteger();
+            char str[50];
+            if (field == 1)
+            {
+                printf("Enter the new name: ");
+                gets(str);
+                printf("The new name is %s \n", str);
+                printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                int confirm;
+                do
+                {
+                    confirm = readInteger();
+                    if (confirm == 1)
+                    {
+                        free(accounts[acc_index]->name);
+                        accounts[acc_index]->name = malloc(strlen(str) + 1);
+                        strcpy(accounts[acc_index]->name, str);
+                    }
+                    else if (confirm == 2)
+                        ;
+                    else
+                        printf("Invalid Input!");
+                }
+                while (confirm == -1);
+            }
+            else if (field == 2)
+            {
+                printf("Enter the new e-mail address: ");
+                gets(str);
+                printf("The new e-mail address is %s \n", str);
+                printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                int confirm;
+                do
+                {
+                    confirm = readInteger();
+                    if (confirm == 1)
+                    {
+                        free(accounts[acc_index]->email);
+                        accounts[acc_index]->email = malloc(strlen(str) + 1);
+                        strcpy(accounts[acc_index]->email, str);
+                    }
+                    else if (confirm == 2)
+                        ;
+                    else
+                        printf("Invalid Input!");
+                }
+                while (confirm == -1);
+            }
+            else if (field == 3)
+            {
+                printf("Enter the new mobile: ");
+                gets(str);
+                printf("The new mobile %s \n", str);
+                printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                int confirm;
+                do
+                {
+                    confirm = readInteger();
+                    if (confirm == 1)
+                    {
+                        strcpy(accounts[acc_index]->phone, str);
+                    }
+                    else if (confirm == 2)
+                        ;
+                    else
+                        printf("Invalid Input!");
+                }
+                while (confirm == -1);
+            }
+            else printf("Invalid Input!\n");
+        }
+        while (field == -1);
+        int done;
+        do
+        {
+            printf("For main menu enter 1\n");
+            printf("To exit enter 2\n");
+            done = readInteger();
+            if (done == 1)
+                menu();
+            else if (done == 2)
+                quit();
+            else
+                printf("Invalid Input!\n");
+        }
+        while (done == -1);
     }
 }
 

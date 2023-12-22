@@ -44,8 +44,8 @@ void login();
 account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
 void distAcc(account *p);
 account* decodeText(char* line);
-void load(account*** accounts, int *numRec);
-void unload(account*** accounts, int numRec);
+void load();
+void unload();
 date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
 int binary_search(unsigned long long account_no, int* acc_index);
@@ -65,7 +65,7 @@ void quit();
 
 int main()
 {
-    load(&accounts, &num_acc);  //loads accounts
+    load();  //loads accounts
 
     /*
     //{FOR TESTING LOAD}
@@ -79,7 +79,7 @@ int main()
         menu();
     }
 
-    unload(&accounts, num_acc);  //unloads accounts
+    unload();  //unloads accounts
 
     return 0;
 }
@@ -128,7 +128,7 @@ account* decodeText(char* line)
     return constAcc(accNum, name, email, balance, phone, date_opened);
 }
 
-void load(account*** accounts, int *numRec)
+void load()
 {
     FILE* fp;
     fp = fopen("accounts.txt", "r");
@@ -140,20 +140,20 @@ void load(account*** accounts, int *numRec)
 
     char record[100];
     rewind(fp);
-    *numRec = 0;
+    num_acc = 0;
     while(fgets(record, sizeof(record), fp))
     {
         if (record[0] == '\n') continue; //skip empty line
-        (*numRec)++;
+        num_acc++;
     }
 
-    //printf("num of acc = %d\n", *numRec);  //for testing delete later
+    //printf("num of acc = %d\n", num_acc);  //for testing delete later
 
-    *accounts = (account**)malloc((*numRec) * sizeof(account*));
+    accounts = (account**)malloc((num_acc) * sizeof(account*));
 
     rewind(fp);
     int i;
-    for (i = 0; i < *numRec; i++)
+    for (i = 0; i < num_acc; i++)
     {
         if(!fgets(record, sizeof(record), fp)) break;
 
@@ -162,20 +162,20 @@ void load(account*** accounts, int *numRec)
             i--;
             continue;
         }
-        (*accounts)[i] = decodeText(record);
+        accounts[i] = decodeText(record);
     }
 
     fclose(fp);
 }
 
-void unload(account*** accounts, int numRec)
+void unload()
 {
     int i;
-    for (i = 0; i < numRec; i++)
+    for (i = 0; i < num_acc; i++)
     {
-        distAcc((*accounts)[i]);
+        distAcc((accounts)[i]);
     }
-    free(*accounts);
+    free(accounts);
 }
 
 date *constDate(int month, int year)

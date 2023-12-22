@@ -50,6 +50,12 @@ date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
 void query_search();
 void advanced_search();
+int readInteger();
+void print();
+int SortByNum(const void *a,const void *b);
+int SortByName(const void *a,const void *b);
+int SortByDate(const void *a,const void *b);
+int SortByBalance(const void *a,const void *b);
 void printAccount(account *a);
 void menu();
 void report();
@@ -320,6 +326,73 @@ void printAccount(account *a){
     printf(" %d\n", a->date_opened.year);
 }
 
+//fekra used from chatgpt tarsh manest5dmo? very efficient
+int readInteger() {
+    char buffer[50];
+    int userInput;
+
+    // Read a line of input
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+        return -1;
+    }
+
+    // Uses sscanf to convert the string to an integer and check for additional characters
+    if (sscanf(buffer, "%d", &userInput) != 1 || buffer[1] != '\n') {
+        return -1;
+    }
+
+    return userInput;
+}
+
+void print() {
+    printf("\nSelect order to print the accounts (Enter 1, 2 or 3 accordingly)\n");
+    printf("1- sort by name\n2- sort by balance\n3- sort by date opened\n");
+    int sortType = readInteger();
+
+    switch (sortType)
+    {
+            case 1: qsort(accounts, num_acc, sizeof(account*), SortByName); break;
+            case 2: qsort(accounts, num_acc, sizeof(account*), SortByBalance); break;
+            case 3: qsort(accounts, num_acc, sizeof(account*), SortByDate); break;
+            default: printf("\nINVALID INPUT\n"); print(); return;
+    }
+    //prints all accounts after sorting
+    int i;
+    for (i = 0; i < num_acc; i++)
+    {
+        printAccount(accounts[i]);
+    }
+}
+
+int SortByNum(const void *a,const void *b) {
+    if ((*(account**)a)->account_no > (*(account**)b)->account_no) return 1;
+    else return -1;
+
+    //return ((*(account**)a)->account_no - (*(account**)b)->account_no);  //another way
+}
+
+int SortByName(const void *a,const void *b) {
+// Cast pointers to account** before dereferencing and accessing the name field (dereferencing is getting at the pointed value)
+    return strcmp((*(account**)a)->name, (*(account**)b)->name);
+}
+
+int SortByBalance(const void *a,const void *b) {
+    if ((*(account**)a)->balance > (*(account**)b)->balance) return 1;
+    else if ((*(account**)a)->balance < (*(account**)b)->balance) return -1;
+    else return 0;
+}
+
+int SortByDate(const void *a,const void *b) {
+    if ((*(account**)a)->date_opened.year > (*(account**)b)->date_opened.year) return 1;
+    else if ((*(account**)a)->date_opened.year < (*(account**)b)->date_opened.year) return -1;
+    else
+    {
+        if((*(account**)a)->date_opened.month > (*(account**)b)->date_opened.month) return 1;
+        else if ((*(account**)a)->date_opened.month < (*(account**)b)->date_opened.month) return -1;
+        else return 0;
+    }
+}
+
 void menu() {
     if (!logged_in) {
         printf("To login enter 1\n");
@@ -412,7 +485,7 @@ void menu() {
         case 7: printf("Depositing money\n"); break;
         case 8: printf("Transferring money\n"); break;
         case 9: printf("Reporting\n"); report(); break;
-        case 10: printf ("Printing data of all users\n"); break;
+        case 10: print(); break;
         case 11: log_out(); break;
         default : quit();
     }

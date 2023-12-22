@@ -196,6 +196,9 @@ void setDate(account *a, int month, int year)
 void query_search()
 {
     unsigned long long account_no;
+
+    qsort(accounts, num_acc, sizeof(*accounts), SortByNum); //should we use this better? does the same thing below
+    /*
     account* temp;
     int i, pass, sorted=0;
     for (pass = 1; pass < num_acc && !sorted; pass++)
@@ -214,6 +217,7 @@ void query_search()
         }
     }
     //distAcc(temp);     //fix later
+    */
     printf("Enter account number: ");
     scanf("%llu", &account_no);
     int low = 0, mid, high = num_acc-1, found = 0;

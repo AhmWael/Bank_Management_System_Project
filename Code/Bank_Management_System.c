@@ -340,10 +340,13 @@ void printAccount(account *a){
 int readInteger() {
     char inputs[100];
     fgets(inputs, 99, stdin);
+    int len = strlen(inputs);
+    if (len > 0 && inputs[len - 1] == '\n') {
+        inputs[len - 1] = '\0';
+    }
     int i;
-    if ((inputs[0] == '\n') && (strlen(inputs) == 1)) return -1;
     for (i = 0; inputs[i] != '\0'; i ++) {
-        if (!(isdigit(inputs[i])) && (inputs[i] != '\n')) return -1;
+        if (!isdigit(inputs[i])) return -1;
     }
     int ans = 0;
     for (i = 0; inputs[i] != '\0'; i ++) {

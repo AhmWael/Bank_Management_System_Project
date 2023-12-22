@@ -339,20 +339,18 @@ void printAccount(account *a){
 
 //fekra used from chatgpt tarsh manest5dmo? very efficient
 int readInteger() {
-    char buffer[50];
-    int userInput;
-
-    // Read a line of input
-    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-        return -1;
+    char inputs[100];
+    gets(inputs);
+    int i;
+    for (i = 0; inputs[i] != '\0'; i ++) {
+        if (!isdigit(inputs[i])) return -1;
     }
-
-    // Uses sscanf to convert the string to an integer and check for additional characters
-    if (sscanf(buffer, "%d", &userInput) != 1 || buffer[1] != '\n') {
-        return -1;
+    int ans = 0;
+    for (i = 0; inputs[i] != '\0'; i ++) {
+        ans *= 10;
+        ans += inputs[i] - '0';
     }
-
-    return userInput;
+    return ans;
 }
 
 void print() {

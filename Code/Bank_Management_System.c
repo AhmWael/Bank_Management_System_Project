@@ -337,13 +337,13 @@ void printAccount(account *a){
     printf(" %d\n", a->date_opened.year);
 }
 
-//fekra used from chatgpt tarsh manest5dmo? very efficient
 int readInteger() {
     char inputs[100];
-    gets(inputs);
+    fgets(inputs, 99, stdin);
     int i;
+    if ((inputs[0] == '\n') && (strlen(inputs) == 1)) return -1;
     for (i = 0; inputs[i] != '\0'; i ++) {
-        if (!isdigit(inputs[i])) return -1;
+        if (!(isdigit(inputs[i])) && (inputs[i] != '\n')) return -1;
     }
     int ans = 0;
     for (i = 0; inputs[i] != '\0'; i ++) {

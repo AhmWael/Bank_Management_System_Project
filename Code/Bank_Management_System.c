@@ -48,6 +48,7 @@ void load(account*** accounts, int *numRec);
 void unload(account*** accounts, int numRec);
 date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
+int binary_search(unsigned long long account_no, int* acc_index);
 void query_search();
 void advanced_search();
 int readInteger();
@@ -74,7 +75,6 @@ int main()
         printAccount(accounts[i]);  //prints all accounts
     }
     */
-    //query_search(); //for testing query search
     while (1) {
         menu();
     }
@@ -193,6 +193,22 @@ void setDate(account *a, int month, int year)
     free(d);
 }
 
+int binary_search(unsigned long long account_no, int* mid)
+{
+    int low = 0, high = num_acc-1, found = 0;
+    while (!found && low <= high)
+    {
+        *mid = (high + low) / 2;
+        if (account_no == accounts[*mid]->account_no)
+            found = 1;
+        else if (account_no < accounts[*mid]->account_no)
+            high = *mid - 1;
+        else
+            low = *mid + 1;
+    }
+    return found;
+}
+
 void query_search()
 {
     unsigned long long account_no;
@@ -220,21 +236,12 @@ void query_search()
     */
     printf("Enter account number: ");
     scanf("%llu", &account_no);
-    int low = 0, mid, high = num_acc-1, found = 0;
-    while (!found && low <= high)
-    {
-        mid = (high + low) / 2;
-        if (account_no == accounts[mid]->account_no)
-            found = 1;
-        else if (account_no < accounts[mid]->account_no)
-            high = mid - 1;
-        else
-            low = mid + 1;
-    }
+    int acc_index;
+    int found = binary_search(account_no,&acc_index);
     if (!found)
         printf("The Specified Account is not found!");
     else
-        printAccount(accounts[mid]);
+        printAccount(accounts[acc_index]);
 }
 
 void advanced_search(){

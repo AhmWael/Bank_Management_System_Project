@@ -629,7 +629,6 @@ void delete_account(){
 
     unsigned long long input;
     input = read_account_no();
-    if(input == 0)
 
     while(input == 0){
         printf("Invalid Input, Enter valid account number(10 digits): ");
@@ -640,30 +639,32 @@ void delete_account(){
 
     int i;
     for(i = 0;i<num_acc;i++){
-        if(accounts[i]->account_no == input){
-            found = 1;
-            if(accounts[i]->balance > 0){
-                printf("\nCan't delete an account with positive available balance.\n");
-                break;
-            }
-            else{
-                printf("\nDo you really want to delete this account: ");
-                printAccount(accounts[i]);
-                printf("\nEnter 1 to confirm\nEnter 2 to cancel and return to menu\n");
-                int choice = readInteger();
-                while(choice == -1){
-                    printf("Invalid input, please enter 1 or 2 only: ");
-                    choice = readInteger();
-                }
-                if(choice == 1)
-                {
-                    distAcc(accounts[i]);
-                    printf("\nAccount deleted Successfully.\n");
+        if(accounts[i] != NULL){
+            if(accounts[i]->account_no == input){
+                found = 1;
+                if(accounts[i]->balance > 0){
+                    printf("\nCan't delete an account with positive available balance.\n");
                     break;
                 }
                 else{
-                    printf("\nCancelled deletion!\n");
-                    break;
+                    printf("\nDo you really want to delete this account: ");
+                    printAccount(accounts[i]);
+                    printf("\n[1] Confirm\n[2] Cancel and return to menu\n");
+                    int choice = readInteger();
+                    while(choice != 1 && choice != 2){
+                        printf("Invalid input, please enter 1 or 2 only: ");
+                        choice = readInteger();
+                    }
+                    if(choice == 1)
+                    {
+                        distAcc(accounts[i]);
+                        printf("\nAccount deleted Successfully.\n");
+                        break;
+                    }
+                    else if(choice == 2){
+                        printf("\nCancelled deletion!\n");
+                        break;
+                    }
                 }
             }
         }
@@ -674,84 +675,55 @@ void delete_account(){
 
 void menu() {
     if (!logged_in) {
-        printf("To login enter 1\n");
-        printf("To quit enter 2\n");
-        char input[100] = "";
-        //fflush(stdin);
-        gets(input);
-        while ((strcmp(input, "1") != 0) && (strcmp(input, "2") != 0)) {
+        printf("[1] Login\n");
+        printf("[2] Quit\n");
+        int input = readInteger();
+        while(input != 1 && input != 2){
             printf("Invalid input! You must enter either 1 or 2.\n");
-            printf("To login enter 1\n");
-            printf("To quit enter 2\n");
-            //fflush(stdin);
-            gets(input);
+            printf("[1] Login\n");
+            printf("[2] Quit\n");
+            input = readInteger();
         }
-        if (input[0] == '1') {
-            login(); // should be replaced with the function login();
-            logged_in = 1; // when login() is created this line should be executed when username and password match
+        if (input == 1) {
+            login();
+            logged_in = 1;
         }
-        if (input[0] == '2')
+        if (input == 2)
             quit();
         return ;
     }
     printf("Welcome to the main menu.\n");
-    printf("To add an account, enter 1\n");
-    printf("To delete an account, enter 2\n");
-    printf("To modify the data of an account, enter 3\n");
-    printf("To search for an account using account number, enter 4\n");
-    printf("For advanced searching, enter 5\n");
-    printf("To withdraw money from an account, enter 6\n");
-    printf("To deposit money into an account, enter 7\n");
-    printf("To transfer money from one account to another, enter 8\n");
-    printf("To get a report about the transactions of an account, enter 9\n");
-    printf("To print data of all accounts, enter 10\n");
-    printf("To log out, enter 11\n");
-    printf("To quit the program entirely, enter 12\n");
-    char inputs[100] = "";
-    int i;
-    bool contain_char = 0, bad_input = 1;
-    while (bad_input) {
-        contain_char = 0;
-        gets(inputs);
-        for (i = 0; inputs[i] != '\0'; i ++) {
-            if ((inputs[i] == '-') && (i == 0))
-                continue ;
-            if (!isdigit(inputs[i])) {
-                contain_char = 1;
-                break ;
-            }
-        }
-        if (contain_char) {
-            printf("Invalid input! Input should only consist of digits\n");
-        }
-        else {
-            if ((strcmp(inputs, "1") == 0) || (strcmp(inputs, "2") == 0) || (strcmp(inputs, "3") == 0)
-                || (strcmp(inputs, "4") == 0) || (strcmp(inputs, "5") == 0) || (strcmp(inputs, "6") == 0)
-                || (strcmp(inputs, "7") == 0) || (strcmp(inputs, "8") == 0) || (strcmp(inputs, "9") == 0)
-                || (strcmp(inputs, "10") == 0) || (strcmp(inputs, "11") == 0) || (strcmp(inputs, "12") == 0)) {
-                    bad_input = 0;
-                    continue ;
-                }
-            else {
-                printf("Invalid input! Input should be between 1 and 12\n");
-            }
-        }
-        printf("To add an account, enter 1\n");
-        printf("To delete an account, enter 2\n");
-        printf("To modify the data of an account, enter 3\n");
-        printf("To search for an account using account number, enter 4\n");
-        printf("For advanced searching, enter 5\n");
-        printf("To withdraw money from an account, enter 6\n");
-        printf("To deposit money into an account, enter 7\n");
-        printf("To transfer money from one account to another, enter 8\n");
-        printf("To get a report about the transactions of an account, enter 9\n");
-        printf("To print data of all accounts, enter 10\n");
-        printf("To log out, enter 11\n");
-        printf("To quit the program entirely, enter 12\n");
-    }
-    int input = 0;
-    for (i = 0; inputs[i] != '\0'; i ++) {
-        input = input * 10 + inputs[i] - '0';
+    printf("[1]  Add an account\n");
+    printf("[2]  Delete an account\n");
+    printf("[3]  Modify the data of an account\n");
+    printf("[4]  Search for an account using account number\n");
+    printf("[5]  Advanced searching\n");
+    printf("[6]  Withdraw money from an account\n");
+    printf("[7]  Deposit money into an account\n");
+    printf("[8]  Transfer money from one account to another\n");
+    printf("[9]  Report about the transactions of an account\n");
+    printf("[10] Print data of all accounts\n");
+    printf("[11] Log out\n");
+    printf("[12] Quit the program entirely\n");
+    int input = readInteger();
+    while(!(input == 1 || input == 2 || input == 3
+            || input == 4 || input == 5 || input == 6
+            || input == 7 || input == 8 || input == 9
+            || input == 10 || input == 11 || input == 12)){
+            printf("Invalid input! Input should be between 1 and 12\n");
+            printf("[1]  Add an account\n");
+            printf("[2]  Delete an account\n");
+            printf("[3]  Modify the data of an account\n");
+            printf("[4]  Search for an account using account number\n");
+            printf("[5]  Advanced searching\n");
+            printf("[6]  Withdraw money from an account\n");
+            printf("[7]  Deposit money into an account\n");
+            printf("[8]  Transfer money from one account to another\n");
+            printf("[9]  Report about the transactions of an account\n");
+            printf("[10] Print data of all accounts\n");
+            printf("[11] Log out\n");
+            printf("[12] Quit the program entirely\n");
+            input = readInteger();
     }
     switch (input) {
         // all the print statements here are just temporary place holders for the actual functions

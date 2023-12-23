@@ -94,8 +94,9 @@ void create_transaction_file(unsigned long long account_no) {
 
     snprintf(filename, sizeof(filename), "%010llu.txt", account_no);
 
-    FILE *file = fopen(filename, "w");
-    fclose(file);
+    FILE *fp = fopen(filename, "r");
+    if (!fp) fp = fopen(filename, "w");
+    fclose(fp);
 }
 
 account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened)

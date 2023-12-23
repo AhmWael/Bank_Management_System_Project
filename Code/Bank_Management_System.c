@@ -62,6 +62,7 @@ int SortByDate(const void *a,const void *b);
 int SortByBalance(const void *a,const void *b);
 void modify_acc();
 void printAccount(account *a);
+void deposit();
 void menu();
 void report();
 void log_out();
@@ -522,6 +523,7 @@ void print() {
     {
         printAccount(accounts[i]);
     }
+    printf("\n");
 }
 
 int SortByNum(const void *a,const void *b) {
@@ -551,6 +553,71 @@ int SortByDate(const void *a,const void *b) {
         else if ((*(account**)a)->date_opened.month < (*(account**)b)->date_opened.month) return -1;
         else return 0;
     }
+}
+
+void deposit() {
+    printf("\nEnter account number\nAccount Number: ");
+    unsigned long long accNum = read_account_no();
+
+    while (accNum == 0) {
+        printf("\nInvalid Input, try again.\n");
+        printf("\nEnter account number\nAccount Number: ");
+        accNum = read_account_no();
+    }
+
+    qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
+    int acc_index;
+    int found = binary_search(accNum, &acc_index);
+    if (!found) {
+        printf("\nThe Specified Account is not found!\n\n");
+        return;
+    }
+
+    printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
+    float amount;
+    scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+
+    while(amount > 10000.00) {
+        printf("\nError: Amount entered is beyond limit\n");
+        printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
+        scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+    }
+    fflush(stdin);
+
+    printf("\nAccount Number: %llu\nDeposit Amount: $%.2f\n\n", accNum, amount);
+    printf("To confirm the transaction enter 1\nTo cancel enter 2\n");
+    int confirm;
+    do {
+    confirm = readInteger();
+    if (confirm == 1)
+    {
+        printf("\nDepositing $%.2f to account...\n", amount);
+
+        double oldBalance = accounts[acc_index]->balance;
+        accounts[acc_index]->balance += (double)amount;
+        printf("Success!\n\nPrevious balance: $%.2f\nNew balance: $%.2f\n\n", oldBalance, accounts[acc_index]->balance);
+
+        //UPDATE TRANSACTION ARRAY IN ACCOUNT STRUCT {WORK IN PROGRESS}
+        /*int i, updated = 0;
+        while(i <= 5 && !updated) {
+            if(accounts[acc_index]->recent_transfers[i] == NULL) {
+                accounts[acc_index]->recent_transfers[i] = {NULL, accNum, (double)amount};
+                updated = 1;
+            }
+        }
+        if (!updated) {
+            accounts[acc_index]->recent_transfers[5] = {NULL, accNum, (double)amount}; //shift transactions do later
+        }
+        */
+
+        //update transaction file
+        //update accounts file
+    }
+    else if (confirm == 2)
+        return;
+    else
+        printf("Invalid Input!");
+    } while (confirm == -1);
 }
 
 void menu() {
@@ -643,7 +710,7 @@ void menu() {
         case 4: printf("Searching for an account\n"); break;
         case 5: printf("Advanced searching\n"); advanced_search(); break;
         case 6: printf("Withdrawing money\n"); break;
-        case 7: printf("Depositing money\n"); break;
+        case 7: printf("Depositing money\n"); deposit(); break;
         case 8: printf("Transferring money\n"); break;
         case 9: printf("Reporting\n"); report(); break;
         case 10: print(); break;

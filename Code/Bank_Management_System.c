@@ -575,6 +575,7 @@ void menu() {
             quit();
         return ;
     }
+    printf("Welcome to the main menu.\n");
     printf("To add an account, enter 1\n");
     printf("To delete an account, enter 2\n");
     printf("To modify the data of an account, enter 3\n");
@@ -821,6 +822,7 @@ void login() {
             {
              printf("invalid password\n");
                 inv_p++;
+                printf("You have %d tries left\n", 5 - inv_p);
             }
             else{
           flagp=1;
@@ -831,8 +833,9 @@ void login() {
                 printf("too many invalid passwords have been entered\nQuitting the program");
                 exit(3);}
         }
-        else {printf("invalid username\n");
-              inv_u++;}
+        else {printf("Invalid username\n");
+              inv_u++;
+              printf("You have %d tries left\n", 5 - inv_u);}
     } while (!flagu&&(inv_u<5));
     if(inv_u==5){
     printf("too many invalid usernames have been entered\nQuitting the program");
@@ -841,4 +844,5 @@ void login() {
     fclose(fptr);
     free(c);
     free(x);
+    fflush(stdin);
 }

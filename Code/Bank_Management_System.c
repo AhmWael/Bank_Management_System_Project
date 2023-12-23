@@ -65,6 +65,7 @@ void printAccount(account *a);
 void deposit();
 void menu();
 void report();
+void save();
 void log_out();
 void quit();
 
@@ -264,7 +265,7 @@ void query_search()
 
 void advanced_search(){
     printf("Enter keyword: ");
-    char key[30];
+    char key[50];
     gets(key);
     while(!((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= '0' && key[0] <= '9'))){
         printf("Invalid input, please enter keyword starting with a letter or a number only: ");
@@ -819,6 +820,22 @@ void report() {
         }
     }
     fclose(fp);
+}
+
+void save(){
+    FILE *fp = fopen("accounts.txt", "w");
+    if(fp == NULL)
+        printf("Error: couldn't open file");
+    int i;
+    for(i = 0;i<num_acc;i++){
+        if(accounts[i] != NULL){
+            sprintf(fp, "%llu,%s,%s,%.2f,%s,%d-%d\n", accounts[i]->account_no,
+                    accounts[i]->name, accounts[i]->email, accounts[i]->balance,
+                    accounts[i]->phone, accounts[i]->date_opened.month, accounts[i]->date_opened.year);
+        }
+    }
+    fclose(fp);
+    //add saving transactions to files
 }
 
 void log_out() {

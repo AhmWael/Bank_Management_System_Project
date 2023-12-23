@@ -730,8 +730,8 @@ void menu() {
         // please replace them once the function has been made
         case 1: printf("Adding an account\n"); break;
         case 2: printf("Deleting an account\n"); delete_account(); break;
-        case 3: printf("Modifying account\n"); break;
-        case 4: printf("Searching for an account\n"); break;
+        case 3: printf("Modifying account\n"); modify_acc(); break;
+        case 4: printf("Searching for an account\n"); query_search(); break;
         case 5: printf("Advanced searching\n"); advanced_search(); break;
         case 6: printf("Withdrawing money\n"); break;
         case 7: printf("Depositing money\n"); deposit(); break;

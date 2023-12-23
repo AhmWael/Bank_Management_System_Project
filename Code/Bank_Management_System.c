@@ -63,6 +63,7 @@ int SortByBalance(const void *a,const void *b);
 void modify_acc();
 void printAccount(account *a);
 void deposit();
+void delete_account();
 void menu();
 void report();
 void save();
@@ -442,7 +443,7 @@ void printAccount(account *a){
     printf("\nAccount Number : %lld\n", a->account_no);
     printf("Name: %s\n", a->name);
     printf("E-mail : %s\n", a->email);
-    printf("Balance: %.2lf\n $", a->balance);
+    printf("Balance: %.2lf $\n", a->balance);
     printf("Mobile: %s\n", a->phone);
     printf("Date Opened: ");
     switch (a->date_opened.month)
@@ -467,6 +468,8 @@ int readInteger() {
     char inputs[100];
     fgets(inputs, 99, stdin);
     int len = strlen(inputs);
+    if(inputs[0] == '\n')
+        return -1;
     if (len > 0 && inputs[len - 1] == '\n') {
         inputs[len - 1] = '\0';
     }
@@ -621,6 +624,54 @@ void deposit() {
     } while (confirm == -1);
 }
 
+void delete_account(){
+    printf("Enter account number: ");
+
+    unsigned long long input;
+    input = read_account_no();
+    if(input == 0)
+
+    while(input == 0){
+        printf("Invalid Input, Enter valid account number(10 digits): ");
+        input = read_account_no();
+    }
+
+    bool found = 0;
+
+    int i;
+    for(i = 0;i<num_acc;i++){
+        if(accounts[i]->account_no == input){
+            found = 1;
+            if(accounts[i]->balance > 0){
+                printf("\nCan't delete an account with positive available balance.\n");
+                break;
+            }
+            else{
+                printf("\nDo you really want to delete this account: ");
+                printAccount(accounts[i]);
+                printf("\nEnter 1 to confirm\nEnter 2 to cancel and return to menu\n");
+                int choice = readInteger();
+                while(choice == -1){
+                    printf("Invalid input, please enter 1 or 2 only: ");
+                    choice = readInteger();
+                }
+                if(choice == 1)
+                {
+                    distAcc(accounts[i]);
+                    printf("\nAccount deleted Successfully.\n");
+                    break;
+                }
+                else{
+                    printf("\nCancelled deletion!\n");
+                    break;
+                }
+            }
+        }
+    }
+    if(!found)
+        printf("\nCouldn't find account.\n");
+}
+
 void menu() {
     if (!logged_in) {
         printf("To login enter 1\n");
@@ -706,7 +757,7 @@ void menu() {
         // all the print statements here are just temporary place holders for the actual functions
         // please replace them once the function has been made
         case 1: printf("Adding an account\n"); break;
-        case 2: printf("Deleting an account\n"); break;
+        case 2: printf("Deleting an account\n"); delete_account(); break;
         case 3: printf("Modifying account\n"); break;
         case 4: printf("Searching for an account\n"); break;
         case 5: printf("Advanced searching\n"); advanced_search(); break;

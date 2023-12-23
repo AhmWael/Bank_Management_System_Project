@@ -41,6 +41,7 @@ typedef struct {
 account** accounts = NULL;
 
 void login();
+void create_transaction_file(unsigned long long account_no);
 account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
 void distAcc(account *p);
 account* decodeText(char* line);
@@ -86,6 +87,16 @@ int main()
     return 0;
 }
 
+void create_transaction_file(unsigned long long account_no) {
+
+    char filename[15];  //10 for account_no 4 for .txt and 1 for \0    10 + 4 + 1 = 15
+
+    snprintf(filename, sizeof(filename), "%010llu.txt", account_no);
+
+    FILE *file = fopen(filename, "w");
+    fclose(file);
+}
+
 account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened)
 {
     account* p = malloc(sizeof(account));
@@ -105,6 +116,8 @@ account* constAcc(unsigned long long account_no, char *name, char *email, double
 
     p->date_opened = date_opened;
 
+    create_transaction_file(account_no);
+
     return p;
 }
 
@@ -118,7 +131,7 @@ void distAcc(account *p)
 
 account* decodeText(char* line)
 {
-    unsigned long long accNum = atoll(strtok(line, ","));
+    unsigned long long accNum = strtoull(strtok(line, ","), NULL, 10);
     char *name = strtok(NULL, ",");
     char *email = strtok(NULL, ",");
     double balance = strtod(strtok(NULL, ","), NULL);

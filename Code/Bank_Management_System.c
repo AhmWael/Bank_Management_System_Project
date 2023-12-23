@@ -52,6 +52,7 @@ int binary_search(unsigned long long account_no, int* acc_index);
 void query_search();
 void advanced_search();
 int readInteger();
+unsigned long long read_account_no();
 void print();
 int SortByNum(const void *a,const void *b);
 int SortByName(const void *a,const void *b);
@@ -462,6 +463,30 @@ int readInteger() {
         ans += inputs[i] - '0';
     }
     return ans;
+}
+
+unsigned long long read_account_no(){
+    char buffer[30];
+    fgets(buffer, 29, stdin);
+    int len = strlen(buffer);
+    if (len > 0 && buffer[len - 1] == '\n') {
+        buffer[len - 1] = '\0';
+    }
+    int i;
+    for (i = 0; buffer[i] != '\0'; i++) {
+        if (!isdigit(buffer[i])) return 0;
+    }
+    len = strlen(buffer);
+    if(len != 10)
+        return 0;
+
+    unsigned long long result = 0;
+
+    for (i = 0; buffer[i] != '\0'; i ++) {
+        result *= 10;
+        result += buffer[i] - '0';
+    }
+    return result;
 }
 
 void print() {

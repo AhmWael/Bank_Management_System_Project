@@ -29,6 +29,7 @@ typedef struct {
 typedef struct {
     char *username, *password;
 }employee;
+employee current_employee;
 
 typedef struct {
     unsigned long long account_no;
@@ -789,7 +790,6 @@ void quit() {
     printf("Quitting the program has been cancelled\n");
 }
 void login() {
-    employee current_employee;
     FILE *fptr;
     int i=0, flagu=0,flagp=0,inv_p=0,inv_u=0;
     char *c = malloc(100);
@@ -825,14 +825,14 @@ void login() {
           flagp=1;
                 current_employee.password=pass;
             break;}}
-            while(!flagp&&();
+            while(!flagp&&(inv_p<5));
             if(inv_p==5){
                 printf("too many invalid passwords have been entered\nQuitting the program");
                 exit(3);}
         }
         else {printf("invalid username\n");
               inv_u++;}
-    } while (!flagu);
+    } while (!flagu&&(inv_u<5));
     if(inv_u==5){
     printf("too many invalid usernames have been entered\nQuitting the program");
     exit(3);}

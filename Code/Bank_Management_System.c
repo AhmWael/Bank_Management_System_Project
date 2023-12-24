@@ -863,36 +863,31 @@ void save(){
 
 void log_out() {
     printf("Are you sure you want to log out?\n");
-    printf("Enter 1 to confirm logging out or 0 if you want to return.\n");
-    char conf[100] = "";
-    //fflush(stdin);
-    gets(conf);
-    while ((strcmp(conf, "1") != 0) && (strcmp(conf, "0") != 0)) {
-        printf("Invalid input! You must enter either 0 or 1.\n");
-        printf("Enter 1 to confirm logging out or 0 if you want to return.\n");
-        //fflush(stdin);
-        gets(conf);
+    printf("[1] Confirm logout\n[2] Cancel\n");
+    int conf = readInteger();
+    while(conf != 1 && conf != 2){
+        printf("Invalid input! You must enter either 1 or 2.\n");
+        printf("[1] Confirm logout\n[2] Cancel\n");
+        conf = readInteger();
     }
-    if (conf[0] == '1') {
+    if (conf == 1) {
         logged_in = 0;
         printf("Logging out\nGoodbye %s\n",current_employee.username); // should print the username of employee
+        return;
     }
     printf("Logging out has been cancelled\n");
 }
 
 void quit() {
     printf("Are you sure you want to quit?\n");
-    printf("Enter 1 to confirm quitting or 0 if you want to return.\n");
-    char conf[100] = "";
-    //fflush(stdin);
-    gets(conf);
-    while ((strcmp(conf, "1") != 0) && (strcmp(conf, "0") != 0)) {
-        printf("Invalid input! You must enter either 0 or 1.\n");
-        printf("Enter 1 to confirm quitting or 0 if you want to return.\n");
-        //fflush(stdin);
-        gets(conf);
+    printf("[1] Confirm quit\n[2] Cancel\n");
+    int conf = readInteger();
+    while(conf != 1 && conf != 2){
+        printf("Invalid input! You must enter either 1 or 2.\n");
+        printf("[1] Confirm logout\n[2] Cancel\n");
+        conf = readInteger();
     }
-    if (conf[0] == '1') {
+    if (conf == 1) {
         printf("Quitting the program.\nGoodbye");
         exit(0);
     }

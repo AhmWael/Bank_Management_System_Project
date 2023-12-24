@@ -865,11 +865,11 @@ void report() {
         printf("-->");
         fscanf(fp, "%lld %lld %f\n", &transactions.from, &transactions.to, &transactions.amount);
         //fgets(to_get_to_the_next_line, 99, fp);
-        if (transactions.to == 5) { // the number 5 symbolises the bank, it is as if that the bank has received the amount
-            printf("$%.2f have been deposited into the account no.: %lld\n", transactions.amount, transactions.from);
+        if (transactions.to == 5) { // the number 5 symbolises the client, it is as if that the client has received the amount
+            printf("$%.2f have been withdrawn from the account no.: %lld\n", transactions.amount, transactions.to);
         }
         else if (transactions.from == 5) {
-            printf("$%.2f have been withdrawn from the account no.: %lld\n", transactions.amount, transactions.to);
+            printf("$%.2f have been deposited into the account no.: %lld\n", transactions.amount, transactions.from);
         }
         else {
             printf("The account no.: %lld has tranferred $%.2f to the account no.: %lld\n", transactions.from, transactions.amount, transactions.to);

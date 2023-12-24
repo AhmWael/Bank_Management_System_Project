@@ -14,7 +14,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 #include <ctype.h>
 #include <stdbool.h>
 
-bool logged_in = 1;
+bool logged_in = 0;
 int num_acc = 0;
 
 typedef struct {

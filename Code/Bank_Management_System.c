@@ -14,7 +14,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 #include <ctype.h>
 #include <stdbool.h>
 
-bool logged_in = 1;
+bool logged_in = 0;
 int num_acc = 0;
 
 typedef struct {
@@ -85,8 +85,6 @@ int main()
     while (1) {
         menu();
     }
-
-    unload();  //unloads accounts
 
     return 0;
 }
@@ -680,7 +678,7 @@ void delete_account(){
                     break;
                 }
                 else{
-                    printf("\nDo you really want to delete this account: ");
+                    printf("\nAre you sure you want to delete this account: ");
                     printAccount(accounts[i]);
                     printf("\n[1] Confirm\n[2] Cancel and return to menu\n");
                     int choice = readInteger();
@@ -691,7 +689,13 @@ void delete_account(){
                     if(choice == 1)
                     {
                         distAcc(accounts[i]);
-                        printf("\nAccount deleted Successfully.\n");
+                        num_acc--;
+                        int j;
+                        for(j = i;j < num_acc;j++){
+                            accounts[j] = accounts[j+1];
+                        }
+                        printf("\nAccount deleted Successfully.\n\n");
+                        save();
                         break;
                     }
                     else if(choice == 2){
@@ -879,13 +883,14 @@ void report() {
 }
 
 void save(){
+    qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
     FILE *fp = fopen("accounts.txt", "w");
     if(fp == NULL)
         printf("Error: couldn't open file");
     int i;
     for(i = 0;i<num_acc;i++){
         if(accounts[i] != NULL){
-            sprintf(fp, "%llu,%s,%s,%.2f,%s,%d-%d\n", accounts[i]->account_no,
+            fprintf(fp, "%llu,%s,%s,%.2f,%s,%d-%d\n", accounts[i]->account_no,
                     accounts[i]->name, accounts[i]->email, accounts[i]->balance,
                     accounts[i]->phone, accounts[i]->date_opened.month, accounts[i]->date_opened.year);
         }
@@ -921,6 +926,7 @@ void quit() {
         conf = readInteger();
     }
     if (conf == 1) {
+        unload();  //unloads accounts
         printf("Quitting the program.\nGoodbye");
         exit(0);
     }

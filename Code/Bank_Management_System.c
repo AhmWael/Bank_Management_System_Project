@@ -14,7 +14,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 #include <ctype.h>
 #include <stdbool.h>
 
-bool logged_in = 0;
+bool logged_in = 1;
 int num_acc = 0;
 
 typedef struct {
@@ -254,14 +254,38 @@ void query_search()
     }
     //distAcc(temp);     //fix later
     */
-    printf("Enter account number: ");
-    scanf("%llu", &account_no);
+    int done = 1;
+    do
+    {
+        printf("Enter account number: ");
+    scanf("%llu%*c", &account_no);
+    //account_no = read_account_no(); //doesn't work if account number is pasted with CTRL + v
     int acc_index;
     int found = binary_search(account_no,&acc_index);
     if (!found)
-        printf("The Specified Account is not found!");
+    {
+        printf("The Specified Account is not found!\n\n");
+        query_search();
+    }
+
     else
         printAccount(accounts[acc_index]);
+    printf("\n");
+    do
+        {
+            printf("For Main Menu enter 1\n");
+            printf("To Print another account enter 2\n");
+            done = readInteger();
+            if (done == 1)
+                menu();
+            else if (done == 2)
+                ;
+            else
+                printf("Invalid Input! Enter 1 or 2.\n");
+        }
+        while (done != 1 && done != 2);
+    }
+    while (done == 2);
 }
 
 void advanced_search(){
@@ -338,104 +362,113 @@ void modify_acc()
     unsigned long long account_no;
     printf("Enter account number: ");
     scanf("%llu%*c", &account_no);
+    //account_no = read_account_no(); //doesn't work if account number is pasted with CTRL + v
     int acc_index;
     int found = binary_search(account_no,&acc_index);
     if (!found)
-        printf("The Specified Account is not found!");
+    {
+        printf("The Specified Account is not found!\n\n");
+        modify_acc();
+    }
+
     else
     {
-        int field;
+        int done = 1;
         do
         {
-            printf("To modify name enter 1 \n");
-            printf("To modify e-mail address enter 2 \n");
-            printf("To modify mobile enter 3 \n");
-            field = readInteger();
-            char str[50];
-            if (field == 1)
+            int field;
+            do
             {
-                printf("Enter the new name: ");
-                gets(str);
-                printf("The new name is %s \n", str);
-                printf("To confirm the modification enter 1\nTo cancel enter 2\n");
-                int confirm;
-                do
+                printf("[1] Name\n");
+                printf("[2] E-mail Address\n");
+                printf("[3] Mobile\n");
+                field = readInteger();
+                char str[50];
+                if (field == 1)
                 {
-                    confirm = readInteger();
-                    if (confirm == 1)
+                    printf("Enter the new name: ");
+                    gets(str);
+                    printf("The new name is: %s\n", str);
+                    printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                    int confirm;
+                    do
                     {
-                        free(accounts[acc_index]->name);
-                        accounts[acc_index]->name = malloc(strlen(str) + 1);
-                        strcpy(accounts[acc_index]->name, str);
+                        confirm = readInteger();
+                        if (confirm == 1)
+                        {
+                            free(accounts[acc_index]->name);
+                            accounts[acc_index]->name = malloc(strlen(str) + 1);
+                            strcpy(accounts[acc_index]->name, str);
+                        }
+                        else if (confirm == 2)
+                            ;
+                        else
+                            printf("Invalid Input! Enter 1 or 2.\n");
                     }
-                    else if (confirm == 2)
-                        ;
-                    else
-                        printf("Invalid Input!");
+                    while (confirm != 1 && confirm != 2);
                 }
-                while (confirm == -1);
+                else if (field == 2)
+                {
+                    printf("Enter the new e-mail address: ");
+                    gets(str);                                      // no validation for e-mail address
+                    printf("The new e-mail address is: %s \n", str);
+                    printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                    int confirm;
+                    do
+                    {
+                        confirm = readInteger();
+                        if (confirm == 1)
+                        {
+                            free(accounts[acc_index]->email);
+                            accounts[acc_index]->email = malloc(strlen(str) + 1);
+                            strcpy(accounts[acc_index]->email, str);
+                        }
+                        else if (confirm == 2)
+                            ;
+                        else
+                            printf("Invalid Input! Enter 1 or 2.\n");
+                    }
+                    while (confirm != 1 && confirm != 2);
+                }
+                else if (field == 3)
+                {
+                    printf("Enter the new mobile: ");
+                    gets(str);                                      // no validation for mobile number (11 numbers)
+                    printf("The new mobile: %s \n", str);
+                    printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                    int confirm;
+                    do
+                    {
+                        confirm = readInteger();
+                        if (confirm == 1)
+                        {
+                            strcpy(accounts[acc_index]->phone, str);
+                        }
+                        else if (confirm == 2)
+                            ;
+                        else
+                            printf("Invalid Input! Enter 1 or 2.\n");
+                    }
+                    while (confirm != 1 && confirm != 2);
+                }
+                else printf("Invalid Input! Enter 1 or 2 or 3.\n\n");
             }
-            else if (field == 2)
+            while (field != 1 && field != 2 && field != 3);
+            do
             {
-                printf("Enter the new e-mail address: ");
-                gets(str);
-                printf("The new e-mail address is %s \n", str);
-                printf("To confirm the modification enter 1\nTo cancel enter 2\n");
-                int confirm;
-                do
-                {
-                    confirm = readInteger();
-                    if (confirm == 1)
-                    {
-                        free(accounts[acc_index]->email);
-                        accounts[acc_index]->email = malloc(strlen(str) + 1);
-                        strcpy(accounts[acc_index]->email, str);
-                    }
-                    else if (confirm == 2)
-                        ;
-                    else
-                        printf("Invalid Input!");
-                }
-                while (confirm == -1);
+                printf("For Main Menu enter 1\n");
+                printf("To Modify Another field enter 2\n");
+                done = readInteger();
+                if (done == 1)
+                    menu();
+                else if (done == 2)
+                    ;
+                else
+                    printf("Invalid Input! Enter 1 or 2.\n");
             }
-            else if (field == 3)
-            {
-                printf("Enter the new mobile: ");
-                gets(str);
-                printf("The new mobile %s \n", str);
-                printf("To confirm the modification enter 1\nTo cancel enter 2\n");
-                int confirm;
-                do
-                {
-                    confirm = readInteger();
-                    if (confirm == 1)
-                    {
-                        strcpy(accounts[acc_index]->phone, str);
-                    }
-                    else if (confirm == 2)
-                        ;
-                    else
-                        printf("Invalid Input!");
-                }
-                while (confirm == -1);
-            }
-            else printf("Invalid Input!\n");
+            while (done != 1 && done != 2);
         }
-        while (field == -1);
-        int done;
-        do
-        {
-            printf("For main menu enter 1\n");
-            printf("To exit enter 2\n");
-            done = readInteger();
-            if (done == 1)
-                menu();
-            else if (done == 2)
-                quit();
-            else
-                printf("Invalid Input!\n");
-        }
-        while (done == -1);
+        while (done == 2);
     }
 }
 
@@ -620,8 +653,8 @@ void deposit() {
     else if (confirm == 2)
         return;
     else
-        printf("Invalid Input!");
-    } while (confirm == -1);
+        printf("Invalid Input! Enter 1 or 2.\n");
+    } while (confirm != 1 && confirm != 2);                 // 3adeltehalak ya seif 3ashan law kont da5alt ay int 8er 1,2 zay 10 masalan makansh bey2ool error
 }
 
 void delete_account(){
@@ -710,7 +743,7 @@ void menu() {
             || input == 4 || input == 5 || input == 6
             || input == 7 || input == 8 || input == 9
             || input == 10 || input == 11 || input == 12)){
-            printf("Invalid input! Input should be between 1 and 12\n");
+            printf("Invalid input! Input should be between 1 and 12\n\n");
             printf("[1]  Add an account\n");
             printf("[2]  Delete an account\n");
             printf("[3]  Modify the data of an account\n");

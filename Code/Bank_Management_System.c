@@ -252,12 +252,9 @@ void query_search()
     }
     //distAcc(temp);     //fix later
     */
-    int done = 1;
-    do
-    {
-        printf("Enter account number: ");
+    printf("Enter account number: ");
     scanf("%llu%*c", &account_no);
-    //account_no = read_account_no(); //doesn't work if account number is pasted with CTRL + v
+    //account_no = read_account_no();                       //doesn't work if account number is pasted with CTRL + v
     int acc_index;
     int found = binary_search(account_no,&acc_index);
     if (!found)
@@ -269,21 +266,6 @@ void query_search()
     else
         printAccount(accounts[acc_index]);
     printf("\n");
-    do
-        {
-            printf("For Main Menu enter 1\n");
-            printf("To Print another account enter 2\n");
-            done = readInteger();
-            if (done == 1)
-                menu();
-            else if (done == 2)
-                ;
-            else
-                printf("Invalid Input! Enter 1 or 2.\n");
-        }
-        while (done != 1 && done != 2);
-    }
-    while (done == 2);
 }
 
 void advanced_search(){
@@ -397,6 +379,7 @@ void modify_acc()
                             free(accounts[acc_index]->name);
                             accounts[acc_index]->name = malloc(strlen(str) + 1);
                             strcpy(accounts[acc_index]->name, str);
+                            printf("Name changed Successfuly!\n");
                         }
                         else if (confirm == 2)
                             ;
@@ -420,6 +403,7 @@ void modify_acc()
                             free(accounts[acc_index]->email);
                             accounts[acc_index]->email = malloc(strlen(str) + 1);
                             strcpy(accounts[acc_index]->email, str);
+                            printf("E-mail Address changed Successfuly!\n");
                         }
                         else if (confirm == 2)
                             ;
@@ -441,6 +425,7 @@ void modify_acc()
                         if (confirm == 1)
                         {
                             strcpy(accounts[acc_index]->phone, str);
+                            printf("Mobile changed Successfuly!\n");
                         }
                         else if (confirm == 2)
                             ;

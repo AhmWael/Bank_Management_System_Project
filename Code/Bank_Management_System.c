@@ -14,7 +14,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 #include <ctype.h>
 #include <stdbool.h>
 
-bool logged_in = 0;
+bool logged_in = 1;
 int num_acc = 0;
 
 typedef struct {
@@ -252,9 +252,14 @@ void query_search()
     }
     //distAcc(temp);     //fix later
     */
-    printf("Enter account number: ");
-    scanf("%llu%*c", &account_no);
-    //account_no = read_account_no();                       //doesn't work if account number is pasted with CTRL + v
+    do
+    {
+        printf("Enter account number: ");
+        account_no = read_account_no();
+        if (account_no == 0)
+            printf("Invalid Account Number!\n");
+    }
+    while (account_no == 0);                       //doesn't work if account number is pasted with CTRL + v
     int acc_index;
     int found = binary_search(account_no,&acc_index);
     if (!found)
@@ -340,9 +345,14 @@ void modify_acc()
 {
     qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
     unsigned long long account_no;
-    printf("Enter account number: ");
-    scanf("%llu%*c", &account_no);
-    //account_no = read_account_no(); //doesn't work if account number is pasted with CTRL + v
+    do
+    {
+        printf("Enter account number: ");
+        account_no = read_account_no();
+        if (account_no == 0)
+            printf("Invalid Account Number!\n");
+    }
+    while (account_no == 0);
     int acc_index;
     int found = binary_search(account_no,&acc_index);
     if (!found)
@@ -379,6 +389,7 @@ void modify_acc()
                             free(accounts[acc_index]->name);
                             accounts[acc_index]->name = malloc(strlen(str) + 1);
                             strcpy(accounts[acc_index]->name, str);
+                            save();
                             printf("Name changed Successfuly!\n");
                         }
                         else if (confirm == 2)
@@ -403,6 +414,7 @@ void modify_acc()
                             free(accounts[acc_index]->email);
                             accounts[acc_index]->email = malloc(strlen(str) + 1);
                             strcpy(accounts[acc_index]->email, str);
+                            save();
                             printf("E-mail Address changed Successfuly!\n");
                         }
                         else if (confirm == 2)
@@ -425,6 +437,7 @@ void modify_acc()
                         if (confirm == 1)
                         {
                             strcpy(accounts[acc_index]->phone, str);
+                            save();
                             printf("Mobile changed Successfuly!\n");
                         }
                         else if (confirm == 2)

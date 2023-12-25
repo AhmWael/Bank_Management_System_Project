@@ -62,6 +62,7 @@ int SortByDate(const void *a,const void *b);
 int SortByBalance(const void *a,const void *b);
 void modify_acc();
 void printAccount(account *a);
+void saveTransaction(unsigned long long account_no, unsigned long long from, unsigned long long to, float amount);
 void deposit();
 void delete_account();
 void menu();
@@ -359,6 +360,7 @@ void modify_acc()
     {
         printf("The Specified Account is not found!\n\n");
         modify_acc();
+        return;
     }
 
     else
@@ -588,21 +590,39 @@ int SortByDate(const void *a,const void *b) {
     }
 }
 
-void deposit() {
-    printf("\nEnter account number\nAccount Number: ");
-    unsigned long long accNum = read_account_no();
+void saveTransaction(unsigned long long account_no, unsigned long long from, unsigned long long to, float amount) {
+    char filename[15];  //10 for account_no 4 for .txt and 1 for \0    10 + 4 + 1 = 15
+    snprintf(filename, sizeof(filename), "%010llu.txt", account_no);
 
-    while (accNum == 0) {
-        printf("\nInvalid Input, try again.\n");
+    FILE* fp;
+    fp = fopen(filename, "r");
+    if(!fp)
+    {
+        printf("File not found");
+        return;
+    }
+    fp = fopen(filename, "a");
+    fprintf(fp, "%llu %llu %.2f\n", from, to, amount);
+
+    fclose(fp);
+}
+
+void deposit() {
+    unsigned long long accNum;
+    do {
         printf("\nEnter account number\nAccount Number: ");
         accNum = read_account_no();
-    }
+
+            if (accNum == 0)
+            printf("Invalid Account Number!\n");
+    } while (accNum == 0);
 
     qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
     int acc_index;
     int found = binary_search(accNum, &acc_index);
     if (!found) {
         printf("\nThe Specified Account is not found!\n\n");
+        deposit();
         return;
     }
 
@@ -629,28 +649,14 @@ void deposit() {
         double oldBalance = accounts[acc_index]->balance;
         accounts[acc_index]->balance += (double)amount;
         printf("Success!\n\nPrevious balance: $%.2f\nNew balance: $%.2f\n\n", oldBalance, accounts[acc_index]->balance);
-
-        //UPDATE TRANSACTION ARRAY IN ACCOUNT STRUCT {WORK IN PROGRESS}
-        /*int i, updated = 0;
-        while(i <= 5 && !updated) {
-            if(accounts[acc_index]->recent_transfers[i] == NULL) {
-                accounts[acc_index]->recent_transfers[i] = {NULL, accNum, (double)amount};
-                updated = 1;
-            }
-        }
-        if (!updated) {
-            accounts[acc_index]->recent_transfers[5] = {NULL, accNum, (double)amount}; //shift transactions do later
-        }
-        */
-
-        //update transaction file
-        //update accounts file
+        saveTransaction(accNum, 5, accNum, amount); //from: 5 = bank,  to: accNum,  amount: $
+        save();
     }
     else if (confirm == 2)
         return;
     else
         printf("Invalid Input! Enter 1 or 2.\n");
-    } while (confirm != 1 && confirm != 2);                 // 3adeltehalak ya seif 3ashan law kont da5alt ay int 8er 1,2 zay 10 masalan makansh bey2ool error
+    } while (confirm != 1 && confirm != 2);
 }
 
 void delete_account(){

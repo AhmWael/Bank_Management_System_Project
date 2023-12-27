@@ -132,6 +132,7 @@ void distAcc(account *p)
     free(p->name);
     free(p->email);
     free(p->phone);
+    //free(p->date_opened); convert date to pointer
     free(p);
 }
 
@@ -665,7 +666,8 @@ void saveTransaction(unsigned long long account_no, unsigned long long from, uns
         return;
     }
     fp = fopen(filename, "a");
-    fprintf(fp, "%llu %llu %.2lf\n", from, to, amount);
+    if(fprintf(fp, "%llu %llu %.2lf\n", from, to, amount) < 0)
+        printf("Error: data could not be saved");
 
     fclose(fp);
 }
@@ -864,7 +866,7 @@ void report() {
         acc_no = read_account_no();
     }
     if (tries_left == 0) {
-        printf("Too many invalid inputs. Returning to main menu.");
+        printf("Too many invalid inputs. Returning to main menu.\n");
         return ;
     }
     bool found = 0;
@@ -876,7 +878,7 @@ void report() {
         }
     }
     if (!found) {
-        printf("The account you requested can't be found.");
+        printf("The account you requested can't be found.\n");
         return ;
     }
     char inputs[11] = "";
@@ -885,11 +887,12 @@ void report() {
         acc_no /= 10;
     }
     strcat(inputs, ".txt");
+    //snprintf(inputs, sizeof(inputs), "%llu.txt", acc_no);
     FILE *fp;
     fp = fopen(inputs, "r");
     if (fp == NULL) { // this shouldn't happen as we have found the account number in the accounts array
         printf("Error opening file %s\n", inputs);
-        printf("Quitting the program.");
+        printf("Quitting the program.\n");
         fclose(fp);
         exit(2);
     }
@@ -903,19 +906,21 @@ void report() {
         for (i = 4; i >= 1; i --) {
             transactions[i] = transactions[i - 1];
         }
-        fscanf(fp, "%llu %llu %f\n", transactions[0].from, transactions[0].to, transactions[0].amount);
+        fscanf(fp, "%llu %llu %f\n", &transactions[0].from, &transactions[0].to, &transactions[0].amount);
     }
-    printf("Transactions sorted from most recent to oldest:\n");
+    printf("\nTransactions sorted from most recent to oldest:\n");
     for (i = 0; i < 5; i ++) {
-        printf("-->");
-        if (transactions[i].to == 5) { // the number 5 symbolises the client, it is as if that the client has received the amount
-            printf("$%.2f have been withdrawn from the account no.: %llu\n", transactions[i].amount, transactions[i].to);
-        }
-        else if (transactions[i].from == 5) {
-            printf("$%.2f have been deposited into the account no.: %llu\n", transactions[i].amount, transactions[i].from);
-        }
-        else {
-            printf("The account no.: %llu has tranferred $%.2f to the account no.: %llu\n", transactions[i].from, transactions[i].amount, transactions[i].to);
+        if(transactions[i].from != 1){ // checks whether there is a transaction or not
+            printf("-->");
+            if (transactions[i].to == 5) { // the number 5 symbolises the client, it is as if that the client has received the amount
+                printf("$%.2f have been withdrawn from the account no.: %llu\n", transactions[i].amount, transactions[i].from);
+            }
+            else if (transactions[i].from == 5) {
+                printf("$%.2f have been deposited into the account no.: %llu\n", transactions[i].amount, transactions[i].to);
+            }
+            else {
+                printf("The account no.: %llu has transferred $%.2f to the account no.: %llu\n", transactions[i].from, transactions[i].amount, transactions[i].to);
+            }
         }
     }
     fclose(fp);

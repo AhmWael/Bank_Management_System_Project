@@ -853,101 +853,69 @@ void menu() {
 
 void report() {
     unsigned long long acc_no;
-    char inputs[100];
-    long position;
-    bool bad_input = 1, cancel = 0;
     int i, tries_left = 5;
-    printf("Please note that you only have 5 tries to enter a correct account number, otherwise the program will be forcibly closed\n");
-    while ((bad_input) && (tries_left)) {
-        printf("Enter the account number: ");
-        gets(inputs);
-        if (strcmp(inputs, "0") == 0) {
-            printf("The report has been cancelled\n");
-            return ;
-        }
-        if (strlen(inputs) != 10) {
-            printf("Invalid input! The account number must have 10 digits.\n");
-            printf("Please check the account number again\n");
-            printf("If you want to cancel the report, please enter 0 when asked about the account number\n");
-            tries_left --;
-            printf("You only have %d tries!!\n", tries_left);
-            continue ;
-        }
-        for (i = 0; inputs[i] != '\0'; i ++) {
-            if (!isdigit(inputs[i])) {
-                printf("Invalid input! The account number can not contain any characters.\n");
-                printf("Please check the account number again\n");
-                printf("If you want to cancel the report, please enter 0 when asked about the account number\n");
-                tries_left --;
-                printf("You only have %d tries!!\n", tries_left);
-                continue ;
+    printf("You must enter a correct account number within a maximum of 5 tries.\n");
+    printf("Enter account number: ");
+    acc_no = read_account_no();
+    while((acc_no == 0) && (tries_left > 0)) {
+        tries_left --;
+        printf("Invalid input!\nYou have %d tries left.\n", tries_left);
+        printf("Enter valid account number(10 digits): ");
+        acc_no = read_account_no();
+    }
+    if (tries_left == 0) {
+        printf("Too many invalid inputs. Returning to main menu.");
+        return ;
+    }
+    bool found = 0;
+    for(i = 0; i < num_acc; i ++){
+        if(accounts[i] != NULL){
+            if(accounts[i]->account_no == acc_no){
+                found = 1;
             }
         }
-        FILE *fp;
-        fp = fopen("accounts.txt", "r");
-        if(!fp)
-        {
-            printf("Error: accounts.txt file not found");
-            exit(2);
-        }
-        rewind(fp);
-        char record[100];
-        while(!feof(fp)) {
-            //printf("Searching in file ");
-            position = ftell(fp);
-            //printf("position: %ld\n", position);
-            fgets(record, 99, fp);
-            if (strstr(record, inputs) != NULL) {
-                bad_input = 0;
-                fclose(fp);
-                //printf("Found the record\n");
-                break;
-            }
-        }
-        if (feof(fp)) {
-            printf("Invalid input! The account number you have entered does not exist\n");
-            tries_left --;
-            printf("You only have %d tries!!\n", tries_left);
-            continue ;
-        }
-        fclose(fp);
     }
-    if (!tries_left) {
-        printf("Too many invalid inputs\nQuitting the program\n");
-        exit(3);
+    if (!found) {
+        printf("The account you requested can't be found.");
+        return ;
     }
-    FILE *fp;
+    char inputs[11] = "";
+    for (i = 9; i >= 0; i --) {
+        inputs[i] = '0' + acc_no % 10;
+        acc_no /= 10;
+    }
     strcat(inputs, ".txt");
+    FILE *fp;
     fp = fopen(inputs, "r");
-    if(!fp)
-    {
-        printf("Error: %s can not be found", inputs);
+    if (fp == NULL) { // this shouldn't happen as we have found the account number in the accounts array
+        printf("Error opening file %s\n", inputs);
+        printf("Quitting the program.");
         fclose(fp);
         exit(2);
     }
-    char latest_transactions[100];
-    fgets(latest_transactions, 99, fp);
-    //printf("string: %s", latest_transactions);
-    while(strcmp(latest_transactions, "Latest transactions:\n") != 0) {
-        //printf("strcmp: %d\n", strcmp(latest_transactions, "Latest transactions:"));
-        fgets(latest_transactions, 99, fp);
-        //printf("string: %s", latest_transactions);
+    transaction_details transactions[5];
+    for (i = 0; i < 5; i ++) {
+        transactions[i].from = 1;
+        transactions[i].to = 1;
+        transactions[i].amount = 1;
     }
-    printf("The latest transactions are: \n");
-    transaction_details transactions;
-    //char to_get_to_the_next_line[100]; // this has no purpose other than getting the pointer to the next line as fscanf doesn't move the pointer
-    while (!feof(fp)) {
-        printf("-->");
-        fscanf(fp, "%lld %lld %f\n", &transactions.from, &transactions.to, &transactions.amount);
-        //fgets(to_get_to_the_next_line, 99, fp);
-        if (transactions.to == 5) { // the number 5 symbolises the client, it is as if that the client has received the amount
-            printf("$%.2f have been withdrawn from the account no.: %lld\n", transactions.amount, transactions.to);
+    while(!feof(fp)) {
+        for (i = 4; i >= 1; i --) {
+            transactions[i] = transactions[i - 1];
         }
-        else if (transactions.from == 5) {
-            printf("$%.2f have been deposited into the account no.: %lld\n", transactions.amount, transactions.from);
+        fscanf(fp, "%lld %lld %f\n", transactions[0].from, transactions[0].to, transactions[0].amount);
+    }
+    printf("Transactions sorted from most recent to oldest:\n");
+    for (i = 0; i < 5; i ++) {
+        printf("-->");
+        if (transactions[i].to == 5) { // the number 5 symbolises the client, it is as if that the client has received the amount
+            printf("$%.2f have been withdrawn from the account no.: %lld\n", transactions[i].amount, transactions[i].to);
+        }
+        else if (transactions[i].from == 5) {
+            printf("$%.2f have been deposited into the account no.: %lld\n", transactions[i].amount, transactions[i].from);
         }
         else {
-            printf("The account no.: %lld has tranferred $%.2f to the account no.: %lld\n", transactions.from, transactions.amount, transactions.to);
+            printf("The account no.: %lld has tranferred $%.2f to the account no.: %lld\n", transactions[i].from, transactions[i].amount, transactions[i].to);
         }
     }
     fclose(fp);

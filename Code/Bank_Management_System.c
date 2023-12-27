@@ -62,7 +62,7 @@ int SortByDate(const void *a,const void *b);
 int SortByBalance(const void *a,const void *b);
 void modify_acc();
 void printAccount(account *a);
-void saveTransaction(unsigned long long account_no, unsigned long long from, unsigned long long to, float amount);
+void saveTransaction(unsigned long long account_no, unsigned long long from, unsigned long long to, double amount);
 void deposit();
 void delete_account();
 void menu();
@@ -73,7 +73,7 @@ void quit();
 
 int main()
 {
-    load();  //loads accounts
+    //load();  //loads accounts
 
     /*
     //{FOR TESTING LOAD}
@@ -149,11 +149,12 @@ account* decodeText(char* line)
 
 void load()
 {
+    printf("\nLoading accounts...\n");
     FILE* fp;
     fp = fopen("accounts.txt", "r");
     if(!fp)
     {
-        printf("File not found");
+        printf("Error: accounts.txt file not found");
         return;
     }
 
@@ -277,7 +278,7 @@ void query_search()
 void advanced_search(){
     printf("Enter keyword: ");
     char key[50];
-    gets(key);
+    fgets(key, 49, stdin);
     while(!((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= '0' && key[0] <= '9'))){
         printf("Invalid input, please enter keyword starting with a letter or a number only: ");
         gets(key);
@@ -379,9 +380,9 @@ void modify_acc()
                 if (field == 1)
                 {
                     printf("Enter the new name: ");
-                    gets(str);
+                    fgets(str, 49, stdin);
                     printf("The new name is: %s\n", str);
-                    printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                    printf("[1] Confirm the modification\n[2] Cancel\n");
                     int confirm;
                     do
                     {
@@ -392,10 +393,10 @@ void modify_acc()
                             accounts[acc_index]->name = malloc(strlen(str) + 1);
                             strcpy(accounts[acc_index]->name, str);
                             save();
-                            printf("Name changed Successfuly!\n");
+                            printf("Name changed Successfully!\n");
                         }
                         else if (confirm == 2)
-                            ;
+                            printf("\nName Modification Cancelled!\n");
                         else
                             printf("Invalid Input! Enter 1 or 2.\n");
                     }
@@ -404,9 +405,9 @@ void modify_acc()
                 else if (field == 2)
                 {
                     printf("Enter the new e-mail address: ");
-                    gets(str);                                      // no validation for e-mail address
+                    fgets(str, 49, stdin); // no validation for e-mail address
                     printf("The new e-mail address is: %s \n", str);
-                    printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                    printf("[1] Confirm the modification\n[2] Cancel\n");
                     int confirm;
                     do
                     {
@@ -417,10 +418,10 @@ void modify_acc()
                             accounts[acc_index]->email = malloc(strlen(str) + 1);
                             strcpy(accounts[acc_index]->email, str);
                             save();
-                            printf("E-mail Address changed Successfuly!\n");
+                            printf("E-mail Address changed Successfully!\n");
                         }
                         else if (confirm == 2)
-                            ;
+                            printf("\nE-mail Modification Cancelled!\n");
                         else
                             printf("Invalid Input! Enter 1 or 2.\n");
                     }
@@ -429,9 +430,9 @@ void modify_acc()
                 else if (field == 3)
                 {
                     printf("Enter the new mobile: ");
-                    gets(str);                                      // no validation for mobile number (11 numbers)
+                    fgets(str, 49, stdin);                                      // no validation for mobile number (11 numbers)
                     printf("The new mobile: %s \n", str);
-                    printf("To confirm the modification enter 1\nTo cancel enter 2\n");
+                    printf("[1] Confirm the modification\n[2] Cancel\n");
                     int confirm;
                     do
                     {
@@ -440,10 +441,10 @@ void modify_acc()
                         {
                             strcpy(accounts[acc_index]->phone, str);
                             save();
-                            printf("Mobile changed Successfuly!\n");
+                            printf("Mobile changed Successfully!\n");
                         }
                         else if (confirm == 2)
-                            ;
+                            printf("\nMobile Modification Cancelled!\n");
                         else
                             printf("Invalid Input! Enter 1 or 2.\n");
                     }
@@ -454,8 +455,8 @@ void modify_acc()
             while (field != 1 && field != 2 && field != 3);
             do
             {
-                printf("For Main Menu enter 1\n");
-                printf("To Modify Another field enter 2\n");
+                printf("[1] Return to Main Menu \n");
+                printf("[2] Modify Another Field\n");
                 done = readInteger();
                 if (done == 1)
                     menu();
@@ -542,7 +543,7 @@ unsigned long long read_account_no(){
 
 void print() {
     printf("\nSelect order to print the accounts (Enter 1, 2 or 3 accordingly)\n");
-    printf("1- sort by name\n2- sort by balance\n3- sort by date opened\n");
+    printf("[1] Sort by name\n[2] Sort by balance\n[3] Sort by date opened\n");
     int sortType = readInteger();
 
     switch (sortType)
@@ -550,7 +551,7 @@ void print() {
             case 1: qsort(accounts, num_acc, sizeof(account*), SortByName); break;
             case 2: qsort(accounts, num_acc, sizeof(account*), SortByBalance); break;
             case 3: qsort(accounts, num_acc, sizeof(account*), SortByDate); break;
-            default: printf("\nINVALID INPUT\n"); print(); return;
+            default: printf("\nINVALID INPUT! (Enter 1, 2 or 3 only)\n"); print(); return;
     }
     //prints all accounts after sorting
     int i;
@@ -590,7 +591,7 @@ int SortByDate(const void *a,const void *b) {
     }
 }
 
-void saveTransaction(unsigned long long account_no, unsigned long long from, unsigned long long to, float amount) {
+void saveTransaction(unsigned long long account_no, unsigned long long from, unsigned long long to, double amount) {
     char filename[15];  //10 for account_no 4 for .txt and 1 for \0    10 + 4 + 1 = 15
     snprintf(filename, sizeof(filename), "%010llu.txt", account_no);
 
@@ -598,11 +599,11 @@ void saveTransaction(unsigned long long account_no, unsigned long long from, uns
     fp = fopen(filename, "r");
     if(!fp)
     {
-        printf("File not found");
+        printf("Error: %s file not found", filename);
         return;
     }
     fp = fopen(filename, "a");
-    fprintf(fp, "%llu %llu %.2f\n", from, to, amount);
+    fprintf(fp, "%llu %llu %.2lf\n", from, to, amount);
 
     fclose(fp);
 }
@@ -627,35 +628,37 @@ void deposit() {
     }
 
     printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
-    float amount;
-    scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+    double amount;
+    scanf("%lf", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
 
-    while(amount > 10000.00) {
+    while(amount > 10000.00 || amount <= 0) {
         printf("\nError: Amount entered is beyond limit\n");
         printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
-        scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+        scanf("%.2lf", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
     }
     fflush(stdin);
 
-    printf("\nAccount Number: %llu\nDeposit Amount: $%.2f\n\n", accNum, amount);
-    printf("To confirm the transaction enter 1\nTo cancel enter 2\n");
+    printf("\nAccount Number: %llu\nDeposit Amount: $%.2lf\n\n", accNum, amount);
+    printf("[1] Confirm the transaction\n[2] Cancel\n");
     int confirm;
     do {
-    confirm = readInteger();
-    if (confirm == 1)
-    {
-        printf("\nDepositing $%.2f to account...\n", amount);
+        confirm = readInteger();
+        if (confirm == 1)
+        {
+            printf("\nDepositing $%.2f to account...\n", amount);
 
-        double oldBalance = accounts[acc_index]->balance;
-        accounts[acc_index]->balance += (double)amount;
-        printf("Success!\n\nPrevious balance: $%.2f\nNew balance: $%.2f\n\n", oldBalance, accounts[acc_index]->balance);
-        saveTransaction(accNum, 5, accNum, amount); //from: 5 = bank,  to: accNum,  amount: $
-        save();
-    }
-    else if (confirm == 2)
-        return;
-    else
-        printf("Invalid Input! Enter 1 or 2.\n");
+            double oldBalance = accounts[acc_index]->balance;
+            accounts[acc_index]->balance += amount;
+            printf("Success!\n\nPrevious balance: $%.2lf\nNew balance: $%.2lf\n", oldBalance, accounts[acc_index]->balance);
+            saveTransaction(accNum, 5, accNum, amount); //from: 5 = bank,  to: accNum,  amount: $
+            save();
+        }
+        else if (confirm == 2){
+            printf("\nTransaction Cancelled!\n");
+            return;
+        }
+        else
+            printf("Invalid Input! Enter 1 or 2.\n");
     } while (confirm != 1 && confirm != 2);
 }
 
@@ -684,28 +687,29 @@ void delete_account(){
                 else{
                     printf("\nAre you sure you want to delete this account: ");
                     printAccount(accounts[i]);
-                    printf("\n[1] Confirm\n[2] Cancel and return to menu\n");
-                    int choice = readInteger();
-                    while(choice != 1 && choice != 2){
-                        printf("Invalid input, please enter 1 or 2 only: ");
-                        choice = readInteger();
-                    }
-                    if(choice == 1)
-                    {
-                        distAcc(accounts[i]);
-                        num_acc--;
-                        int j;
-                        for(j = i;j < num_acc;j++){
-                            accounts[j] = accounts[j+1];
+                    printf("\n[1] Confirm\n[2] Cancel and return to the Main Menu\n");
+                    int confirm;
+                    do {
+                        confirm = readInteger();
+                        if (confirm == 1)
+                        {
+                            distAcc(accounts[i]);
+                            num_acc--;
+                            int j;
+                            for(j = i;j < num_acc;j++){
+                                accounts[j] = accounts[j+1];
+                            }
+                            printf("\nAccount deleted Successfully.\n");
+                            save();
+                            break;
                         }
-                        printf("\nAccount deleted Successfully.\n\n");
-                        save();
-                        break;
-                    }
-                    else if(choice == 2){
-                        printf("\nCancelled deletion!\n");
-                        break;
-                    }
+                        else if (confirm == 2){
+                            printf("\nCancelled deletion!\n");
+                            return;
+                        }
+                        else
+                            printf("Invalid Input! Enter 1 or 2.\n");
+                    } while (confirm != 1 && confirm != 2);
                 }
             }
         }
@@ -728,12 +732,13 @@ void menu() {
         if (input == 1) {
             login();
             logged_in = 1;
+            load();  //loads accounts
         }
         if (input == 2)
             quit();
         return ;
     }
-    printf("Welcome to the main menu.\n");
+    printf("\nWelcome to the main menu.\n");
     printf("[1]  Add an account\n");
     printf("[2]  Delete an account\n");
     printf("[3]  Modify the data of an account\n");
@@ -769,15 +774,15 @@ void menu() {
     switch (input) {
         // all the print statements here are just temporary place holders for the actual functions
         // please replace them once the function has been made
-        case 1: printf("Adding an account\n"); break;
-        case 2: printf("Deleting an account\n"); delete_account(); break;
-        case 3: printf("Modifying account\n"); modify_acc(); break;
-        case 4: printf("Searching for an account\n"); query_search(); break;
-        case 5: printf("Advanced searching\n"); advanced_search(); break;
-        case 6: printf("Withdrawing money\n"); break;
-        case 7: printf("Depositing money\n"); deposit(); break;
-        case 8: printf("Transferring money\n"); break;
-        case 9: printf("Reporting\n"); report(); break;
+        case 1: printf("\nAdding an account\n"); break;
+        case 2: printf("\nDeleting an account\n"); delete_account(); break;
+        case 3: printf("\nModifying account\n"); modify_acc(); break;
+        case 4: printf("\nSearching for an account\n"); query_search(); break;
+        case 5: printf("\nAdvanced searching\n"); advanced_search(); break;
+        case 6: printf("\nWithdrawing money\n"); break;
+        case 7: printf("\nDepositing money\n"); deposit(); break;
+        case 8: printf("\nTransferring money\n"); break;
+        case 9: printf("\nReporting\n"); report(); break;
         case 10: print(); break;
         case 11: log_out(); break;
         default : quit();
@@ -820,7 +825,7 @@ void report() {
         fp = fopen("accounts.txt", "r");
         if(!fp)
         {
-            printf("accounts.txt file not found");
+            printf("Error: accounts.txt file not found");
             exit(2);
         }
         rewind(fp);
@@ -854,7 +859,7 @@ void report() {
     fp = fopen(inputs, "r");
     if(!fp)
     {
-        printf("%s can not be found", inputs);
+        printf("Error: %s can not be found", inputs);
         fclose(fp);
         exit(2);
     }
@@ -890,7 +895,7 @@ void save(){
     qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
     FILE *fp = fopen("accounts.txt", "w");
     if(fp == NULL)
-        printf("Error: couldn't open file");
+        printf("Error: accounts.txt file not found");
     int i;
     for(i = 0;i<num_acc;i++){
         if(accounts[i] != NULL){
@@ -900,16 +905,15 @@ void save(){
         }
     }
     fclose(fp);
-    //add saving transactions to files
 }
 
 void log_out() {
     printf("Are you sure you want to log out?\n");
-    printf("[1] Confirm logout\n[2] Cancel\n");
+    printf("[1] Confirm Logout\n[2] Cancel\n");
     int conf = readInteger();
     while(conf != 1 && conf != 2){
         printf("Invalid input! You must enter either 1 or 2.\n");
-        printf("[1] Confirm logout\n[2] Cancel\n");
+        printf("[1] Confirm Logout\n[2] Cancel\n");
         conf = readInteger();
     }
     if (conf == 1) {
@@ -948,13 +952,13 @@ void login() {
         printf("Error opening file");
         exit(1);
     }
-    do { rewind(fptr);                //used to reset pointer to beggining of file
+    do { rewind(fptr);                //used to reset pointer to beginning of file
         printf("Enter username:");
         scanf("%s", x);
         i=1;
         while(i&&!feof(fptr)){
         fgets(c,100,fptr);
-        token=strtok(c," ");           //used to seperate password and username
+        token=strtok(c," ");           //used to separate password and username
         i=strcmp(token,x);}
         if(!i){
             flagu=1;

@@ -55,6 +55,8 @@ void query_search();
 void advanced_search();
 int readInteger();
 unsigned long long read_account_no();
+double readDouble();
+char*readEmail();
 void print();
 int SortByNum(const void *a,const void *b);
 int SortByName(const void *a,const void *b);
@@ -539,6 +541,66 @@ unsigned long long read_account_no(){
         result += buffer[i] - '0';
     }
     return result;
+}
+double readDouble()
+{
+int count=0,j;
+     char inputs[100];
+    fgets(inputs,99, stdin);
+    int len = strlen(inputs);
+    if(inputs[0] == '\n')
+        return -1;
+    if (len > 0 && inputs[len - 1] == '\n') {
+        inputs[len - 1] = '\0';
+    }
+    int i;
+    for (i = 0; inputs[i] != '\0'; i ++) {
+            if(inputs[i]=='.')
+            {count++;
+                if(count>1)
+                    return -1;
+                continue;
+            }
+        if (!isdigit(inputs[i])) return -1;
+    }
+    double num =0,ans=0,dec=0;
+    int post=0;
+    for (i = 0; inputs[i] != '.'; i ++) {
+        num *= 10;
+        num += inputs[i] - '0';
+    }
+    for(j=i+1;inputs[j]!='\0';j++)
+    {
+        dec*= 10;
+        dec += inputs[j] - '0';
+        post++;
+    }
+
+    dec/=pow(10,post);
+    ans=num+dec;
+
+    return ans;
+}
+char*readEmail()
+{
+    char buffer[30];
+    char*result_e=malloc(30);
+ int i=0,count=0;
+    fgets(buffer, 29, stdin);
+    for(i;buffer[i]!='\0';i++)
+    {
+        if(buffer[i]=='@')
+        {
+            count++;
+       if(count>1)
+            return "NULL";
+            if(buffer[i+1]=='.'||buffer[i+2]=='.'||buffer[0]=='@')
+                return "NULL";
+        }
+    }
+            strcpy(result_e,buffer);
+
+return result_e;
 }
 
 void print() {

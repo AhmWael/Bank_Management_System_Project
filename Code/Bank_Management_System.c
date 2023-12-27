@@ -903,19 +903,19 @@ void report() {
         for (i = 4; i >= 1; i --) {
             transactions[i] = transactions[i - 1];
         }
-        fscanf(fp, "%lld %lld %f\n", transactions[0].from, transactions[0].to, transactions[0].amount);
+        fscanf(fp, "%llu %llu %f\n", transactions[0].from, transactions[0].to, transactions[0].amount);
     }
     printf("Transactions sorted from most recent to oldest:\n");
     for (i = 0; i < 5; i ++) {
         printf("-->");
         if (transactions[i].to == 5) { // the number 5 symbolises the client, it is as if that the client has received the amount
-            printf("$%.2f have been withdrawn from the account no.: %lld\n", transactions[i].amount, transactions[i].to);
+            printf("$%.2f have been withdrawn from the account no.: %llu\n", transactions[i].amount, transactions[i].to);
         }
         else if (transactions[i].from == 5) {
-            printf("$%.2f have been deposited into the account no.: %lld\n", transactions[i].amount, transactions[i].from);
+            printf("$%.2f have been deposited into the account no.: %llu\n", transactions[i].amount, transactions[i].from);
         }
         else {
-            printf("The account no.: %lld has tranferred $%.2f to the account no.: %lld\n", transactions[i].from, transactions[i].amount, transactions[i].to);
+            printf("The account no.: %llu has tranferred $%.2f to the account no.: %llu\n", transactions[i].from, transactions[i].amount, transactions[i].to);
         }
     }
     fclose(fp);

@@ -48,7 +48,7 @@ void advanced_search();
 void add ();
 void delete_account();
 void modify_acc();
-//withdraw function
+void withdraw();
 void deposit();
 void transfer();
 void report();
@@ -394,6 +394,7 @@ time_t currentTime;
 
  accounts[num_acc-1]= constAcc(x,name,email,bal,phone,d);
  //printAccount(accounts[num_acc-1]);
+    save():
  printf("\nAccount added succecfully!\nExiting to main menu....\n");
 
 
@@ -590,6 +591,58 @@ void modify_acc()
             while (done != 1 && done != 2);
         }
         while (done == 2);
+
+}
+void withdraw()
+{
+    unsigned long long accNum;
+    do {
+        printf("\nEnter account number\nAccount Number: ");
+        accNum = read_account_no();
+
+            if (accNum == 0)
+            printf("Invalid Account Number!\n");
+    } while (accNum == 0);
+
+    qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
+    int acc_index;
+    int found = binary_search(accNum, &acc_index);
+    if (!found) {
+        printf("\nThe Specified Account is not found!\n\n");
+        main();
+        return;
+    }
+        printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
+    float amount;
+    scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+
+    while(amount > 10000.00) {
+        printf("\nError: Amount entered is beyond limit\n");
+        printf("\nEnter amount to withdraw from account [limit: 10,000$]\nAmount{$}: ");
+        scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+    }
+    fflush(stdin);
+
+    printf("\nAccount Number: %llu\nWithdrawn Amount: $%.2f\n\n", accNum, amount);
+    printf("To confirm the transaction enter 1\nTo cancel enter 2\n");
+    int confirm;
+    do {
+    confirm = readInteger();
+    if (confirm == 1)
+    {
+        printf("\nWithdrawing $%.2f from account...\n", amount);
+
+        double oldBalance = accounts[acc_index]->balance;
+        accounts[acc_index]->balance -= (double)amount;
+        printf("Success!\n\nPrevious balance: $%.2f\nNew balance: $%.2f\n\n", oldBalance, accounts[acc_index]->balance);
+        saveTransaction(accNum, 5, accNum, amount); //from: 5 = bank,  to: accNum,  amount: $
+        save();
+    }
+    else if (confirm == 2)
+        return;
+    else
+        printf("Invalid Input! Enter 1 or 2.\n");
+    } while (confirm != 1 && confirm != 2);
 
 }
 

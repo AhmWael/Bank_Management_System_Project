@@ -221,27 +221,7 @@ void query_search()
 {
     unsigned long long account_no;
 
-    qsort(accounts, num_acc, sizeof(*accounts), SortByNum); //should we use this better? does the same thing below
-    /*
-    account* temp;
-    int i, pass, sorted=0;
-    for (pass = 1; pass < num_acc && !sorted; pass++)
-    {
-        sorted = 1;
-        for (i = 0; i < num_acc - pass; i++)
-        {
-            if (accounts[i]->account_no > accounts[i+1]->account_no)
-            {
-                temp = accounts[i];
-                accounts[i] = accounts[i+1];
-                accounts[i+1] = temp;
-                sorted = 0;
-            }
-
-        }
-    }
-    //distAcc(temp);     //fix later
-    */
+    qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
     int found, acc_index;
     do
     {
@@ -548,7 +528,7 @@ void modify_acc()
     int done = 1;
     do
     {
-        int field, flag;
+        int field;
         do
         {
             printf("[1] Name\n");
@@ -558,6 +538,7 @@ void modify_acc()
             char str[50];
             if (field == 1)
             {
+                int flag;
                 do
                 {
                     flag=0;
@@ -568,7 +549,7 @@ void modify_acc()
                         str[len - 1] = '\0';
                     if(cont_dig(str))
                     {
-                        printf("Only enter charecters!\n");
+                        printf("Only enter characters!\n");
                         flag=1;
                     }
                 }
@@ -600,12 +581,10 @@ void modify_acc()
                 {
                     printf("Enter the new e-mail address: ");
                     strcpy(str, readEmail());
-                    //str = readEmail();                                          //error using read email with array, fix later
                     if (!strcmp(str, "NULL"))
                         printf("Invalid E-mail Address!\n");
                 }
                 while (!strcmp(str, "NULL"));
-                //fgets(str, 49, stdin);                                          // no validation for e-mail address
                 printf("The new e-mail address is: %s \n", str);
                 printf("[1] Confirm the modification\n[2] Cancel\n");
                 int confirm;
@@ -629,8 +608,14 @@ void modify_acc()
             }
             else if (field == 3)
             {
-                printf("Enter the new mobile: ");
-                fgets(str, 49, stdin);                                      // no validation for mobile number (11 numbers)
+                do
+                {
+                    printf("Enter the new mobile number: ");
+                    strcpy(str, readPhone());
+                    if (!strcmp(str, "NULL"))
+                        printf("Invalid Mobile Number!\n");
+                }
+                while (!strcmp(str, "NULL"));
                 printf("The new mobile: %s \n", str);
                 printf("[1] Confirm the modification\n[2] Cancel\n");
                 int confirm;
@@ -829,7 +814,7 @@ void transfer()
     }
     while (!found_receiver);
     double amount;
-    printf("\nEnter the amount to be transferred\nAmount{$}: ");
+    printf("Enter the amount to be transferred\nAmount{$}: ");
     int valid;
     do
     {
@@ -840,7 +825,7 @@ void transfer()
             if (amount == -1)
             {
                 printf("Invalid Amount\n");
-                printf("Enter the amount to be transferred\nAmount{$}: ");                      //error using read double, fix later
+                printf("Enter the amount to be transferred\nAmount{$}: ");
             }
         }
         while (amount == -1);
@@ -866,7 +851,7 @@ void transfer()
     while (!valid || amount<=0);
     printf("Sender's Account Number: %llu\n", account_no_sender);
     printf("Receiver's Account Number: %llu\n", account_no_receiver);
-    printf("Amount: %.2lf\n", amount);
+    printf("Amount{$}: %.2lf\n", amount);
     printf("[1] Confirm Transaction\n[2] Cancel\n");
     int confirm;
     do
@@ -882,9 +867,9 @@ void transfer()
             saveTransaction(account_no_receiver, account_no_sender, account_no_receiver, amount);
             save();
             printf("Transaction Completed Successfully!\n\n");
-            printf("Sender\t\t\t\tReceiver\n");
-            printf("Old Balance: %.2lf\t\tOld Balance: %.2lf\n", oldBalance_sender, oldBalance_receiver);
-            printf("New Balance: %.2lf\t\tNew Balance: %.2lf\n", accounts[acc_index_sender]->balance, accounts[acc_index_receiver]->balance);
+            printf("Sender(%llu)\t\t\tReceiver(%llu)\n", account_no_sender, account_no_receiver);
+            printf("Old Balance: %.2lf\t\t\tOld Balance: %.2lf\n", oldBalance_sender, oldBalance_receiver);
+            printf("New Balance: %.2lf\t\t\tNew Balance: %.2lf\n", accounts[acc_index_sender]->balance, accounts[acc_index_receiver]->balance);
         }
         else if (confirm == 2)
             printf("\nTransaction Cancelled!\n");

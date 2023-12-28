@@ -492,7 +492,7 @@ void delete_account()
                         }
                         else if (confirm == 2)
                         {
-                            printf("\nCancelled deletion!\n");
+                            printf("\nCanceled deletion!\n");
                             return;
                         }
                         else
@@ -571,7 +571,7 @@ void modify_acc()
                         printf("Name changed Successfully!\n");
                     }
                     else if (confirm == 2)
-                        printf("\nName Modification Cancelled!\n");
+                        printf("\nName Modification Canceled!\n");
                     else
                         printf("Invalid Input! Enter 1 or 2.\n");
                 }
@@ -602,7 +602,7 @@ void modify_acc()
                         printf("E-mail Address changed Successfully!\n");
                     }
                     else if (confirm == 2)
-                        printf("\nE-mail Modification Cancelled!\n");
+                        printf("\nE-mail Modification Canceled!\n");
                     else
                         printf("Invalid Input! Enter 1 or 2.\n");
                 }
@@ -631,7 +631,7 @@ void modify_acc()
                         printf("Mobile changed Successfully!\n");
                     }
                     else if (confirm == 2)
-                        printf("\nMobile Modification Cancelled!\n");
+                        printf("\nMobile Modification Canceled!\n");
                     else
                         printf("Invalid Input! Enter 1 or 2.\n");
                 }
@@ -776,7 +776,7 @@ void deposit()
         }
         else if (confirm == 2)
         {
-            printf("\nTransaction Cancelled!\n");
+            printf("\nTransaction Canceled!\n");
             return;
         }
         else
@@ -841,7 +841,6 @@ void transfer()
                 printf("Error: Amount entered cannot be 0 $\n");
         }
         while (amount <= 0);
-
         if (amount > accounts[acc_index_sender]->balance)
         {
             valid = 0;
@@ -852,7 +851,7 @@ void transfer()
             {
                 confirm = readInteger();
                 if (confirm == 1)
-                    printf("Enter the amount to be transferred\nAmount{$}: ");
+                    continue;
                 else if (confirm == 2)
                     return;
                 else
@@ -861,7 +860,7 @@ void transfer()
             while (confirm != 1 && confirm != 2);
         }
     }
-    while (!valid || amount<=0);
+    while (!valid);
     printf("Sender's Account Number: %llu\n", account_no_sender);
     printf("Receiver's Account Number: %llu\n", account_no_receiver);
     printf("Amount{$}: %.2lf\n", amount);
@@ -885,7 +884,7 @@ void transfer()
             printf("New Balance: %.2lf\t\t\tNew Balance: %.2lf\n", accounts[acc_index_sender]->balance, accounts[acc_index_receiver]->balance);
         }
         else if (confirm == 2)
-            printf("\nTransaction Cancelled!\n");
+            printf("\nTransaction Canceled!\n");
         else
             printf("Invalid Input! Enter 1 or 2.\n");
     }
@@ -1049,7 +1048,7 @@ void log_out()
         printf("Logging out\nGoodbye %s\n",current_employee.username); // should print the username of employee
         return;
     }
-    printf("Logging out has been cancelled\n");
+    printf("Logging out has been canceled\n");
 }
 
 void quit()
@@ -1069,7 +1068,7 @@ void quit()
         printf("Quitting the program.\nGoodbye");
         exit(0);
     }
-    printf("Quitting the program has been cancelled\n");
+    printf("Quitting the program has been canceled\n");
 }
 
 void menu()

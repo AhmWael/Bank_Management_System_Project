@@ -520,16 +520,16 @@ void modify_acc()
                 }
                 else if (field == 2)
                 {
-                    printf("Enter the new e-mail address: ");
-                    /*do
+                    do
                     {
                         printf("Enter the new e-mail address: ");
-                        str = readEmail();                                          //error using read email with array, fix later
-                        if (str == "NULL")
-                            printf("Invalid E-mail Address!");
+                        strcpy(str, readEmail());
+                        //str = readEmail();                                          //error using read email with array, fix later
+                        if (!strcmp(str, "NULL"))
+                            printf("Invalid E-mail Address!\n");
                     }
-                    while (str == "NULL");*/
-                    fgets(str, 49, stdin);                                          // no validation for e-mail address
+                    while (!strcmp(str, "NULL"));
+                    //fgets(str, 49, stdin);                                          // no validation for e-mail address
                     printf("The new e-mail address is: %s \n", str);
                     printf("[1] Confirm the modification\n[2] Cancel\n");
                     int confirm;
@@ -744,7 +744,7 @@ void transfer()
     do
     {
         valid = 1;
-        /*do
+        do
         {
             amount = readDouble();
             if (amount == -1)
@@ -753,8 +753,7 @@ void transfer()
                 printf("Enter the amount to be transferred\nAmount{$}: ");                      //error using read double, fix later
             }
         }
-        while (amount == -1);*/
-        scanf("%lf%*c", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+        while (amount == -1);
         if (amount > accounts[acc_index_sender]->balance)
         {
             valid = 0;
@@ -1289,7 +1288,6 @@ char *readEmail()
     char*result_e=malloc(50);
     int i=0,count_at=0,count_dot=0,j;
     fgets(buffer, 49, stdin);
-
     if(cont_spec(buffer))
     return "NULL";
 
@@ -1317,6 +1315,9 @@ char *readEmail()
     }
     if(count_at!=1||count_dot!=1)
         return "NULL";
+    int len = strlen(buffer);
+     if (len > 0 && buffer[len - 1] == '\n')
+        buffer[len - 1] = '\0';
     strcpy(result_e,buffer);
 
     return result_e;

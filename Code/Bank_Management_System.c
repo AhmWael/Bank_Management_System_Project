@@ -50,7 +50,7 @@ void delete_account();
 void modify_acc();
 //withdraw function
 void deposit();
-//transfer function
+void transfer();
 void report();
 void print();
 void save();
@@ -214,24 +214,23 @@ void query_search()
     }
     //distAcc(temp);     //fix later
     */
+    int found, acc_index;
     do
     {
-        printf("Enter account number: ");
-        account_no = read_account_no();
-        if (account_no == 0)
-            printf("Invalid Account Number!\n");
+        do
+        {
+            printf("Enter account number: ");
+            account_no = read_account_no();
+            if (account_no == 0)
+                printf("Invalid Account Number!\n");
+        }
+        while (account_no == 0);
+        found = binary_search(account_no,&acc_index);
+        if (!found)
+            printf("The Specified Account is not found!\n\n");
     }
-    while (account_no == 0);                       //doesn't work if account number is pasted with CTRL + v
-    int acc_index;
-    int found = binary_search(account_no,&acc_index);
-    if (!found)
-    {
-        printf("The Specified Account is not found!\n\n");
-        query_search();
-    }
-
-    else
-        printAccount(accounts[acc_index]);
+    while (!found);
+    printAccount(accounts[acc_index]);
     printf("\n");
 }
 
@@ -368,35 +367,32 @@ void modify_acc()
 {
     qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
     unsigned long long account_no;
+    int found, acc_index;
     do
     {
-        printf("Enter account number: ");
-        account_no = read_account_no();
-        if (account_no == 0)
-            printf("Invalid Account Number!\n");
-    }
-    while (account_no == 0);
-    int acc_index;
-    int found = binary_search(account_no,&acc_index);
-    if (!found)
-    {
-        printf("The Specified Account is not found!\n\n");
-        modify_acc();
-        return;
-    }
-
-    else
-    {
-        int done = 1;
         do
         {
-            int field;
-            do
-            {
-                printf("[1] Name\n");
-                printf("[2] E-mail Address\n");
-                printf("[3] Mobile\n");
-                field = readInteger();
+            printf("Enter account number: ");
+            account_no = read_account_no();
+            if (account_no == 0)
+                printf("Invalid Account Number!\n");
+        }
+        while (account_no == 0);
+        found = binary_search(account_no,&acc_index);
+        if (!found)
+            printf("The Specified Account is not found!\n\n");
+    }
+    while (!found);
+    int done = 1;
+    do
+    {
+        int field;
+        do
+        {
+            printf("[1] Name\n");
+            printf("[2] E-mail Address\n");
+            printf("[3] Mobile\n");
+            field = readInteger();
                 char str[50];
                 if (field == 1)
                 {
@@ -482,14 +478,14 @@ void modify_acc()
                 if (done == 1)
                     menu();
                 else if (done == 2)
-                    ;
+                    continue;
                 else
                     printf("Invalid Input! Enter 1 or 2.\n");
             }
             while (done != 1 && done != 2);
         }
         while (done == 2);
-    }
+
 }
 
 void deposit() {
@@ -544,6 +540,100 @@ void deposit() {
         else
             printf("Invalid Input! Enter 1 or 2.\n");
     } while (confirm != 1 && confirm != 2);
+}
+
+void transfer()
+{
+    qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
+    unsigned long long account_no_sender;
+    int found_sender, acc_index_sender;
+    do
+    {
+        do
+        {
+            printf("Enter account number of the sender: ");
+            account_no_sender = read_account_no();
+            if (account_no_sender == 0)
+                printf("Invalid Account Number!\n");
+        }
+        while (account_no_sender == 0);
+        found_sender = binary_search(account_no_sender,&acc_index_sender);
+        if (!found_sender)
+            printf("The Specified Account is not found!\n\n");
+    }
+    while (!found_sender);
+    unsigned long long account_no_receiver;
+    int found_receiver, acc_index_receiver;
+    do
+    {
+        do
+        {
+            printf("Enter account number of the receiver: ");
+            account_no_receiver = read_account_no();
+            if (account_no_receiver == 0 || account_no_receiver == account_no_sender)
+                printf("Invalid Account Number!\n");
+        }
+        while (account_no_receiver == 0 || account_no_receiver == account_no_sender);
+        found_receiver = binary_search(account_no_receiver,&acc_index_receiver);
+        if (!found_receiver)
+            printf("The Specified Account is not found!\n\n");
+    }
+    while (!found_receiver);
+    double amount;
+    printf("\nEnter the amount to be transferred\nAmount{$}: ");
+    int valid;
+    do
+    {
+        valid = 1;
+        scanf("%lf%*c", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+        if (amount > accounts[acc_index_sender]->balance)
+        {
+            valid = 0;
+            printf("Invalid Amount!\n");
+            printf("[1] Enter another amount\n[2] Cancel\n");
+            int confirm;
+            do
+            {
+                confirm = readInteger();
+                if (confirm == 1)
+                    printf("Enter the amount to be transferred\nAmount{$}: ");
+                else if (confirm == 2)
+                    return;
+                else
+                    printf("Invalid Input! Enter 1 or 2.\n");
+            }
+            while (confirm != 1 && confirm != 2);
+        }
+    }
+    while (!valid || amount<=0);
+    printf("Sender's Account Number: %llu\n", account_no_sender);
+    printf("Receiver's Account Number: %llu\n", account_no_receiver);
+    printf("Amount: %.2lf\n", amount);
+    printf("[1] Confirm Transfer\n[2] Cancel\n");
+    int confirm;
+    do
+    {
+        confirm = readInteger();
+        if (confirm == 1)
+        {
+            double oldBalance_sender = accounts[acc_index_sender]->balance;
+            double oldBalance_receiver = accounts[acc_index_receiver]->balance;
+            accounts[acc_index_sender]->balance -= amount;
+            accounts[acc_index_receiver]->balance += amount;
+            saveTransaction(account_no_sender, account_no_sender, account_no_receiver, amount);
+            saveTransaction(account_no_receiver, account_no_sender, account_no_receiver, amount);
+            save();
+            printf("Transaction Completed Successfully!\n\n");
+            printf("Sender\t\t\t\tReceiver\n");
+            printf("Old Balance: %.2lf\t\tOld Balance: %.2lf\n", oldBalance_sender, oldBalance_receiver);
+            printf("New Balance: %.2lf\t\tNew Balance: %.2lf\n", accounts[acc_index_sender]->balance, accounts[acc_index_receiver]->balance);
+        }
+        else if (confirm == 2)
+            printf("\nTransaction Cancelled!\n");
+        else
+            printf("Invalid Input! Enter 1 or 2.\n");
+    }
+    while (confirm != 1 && confirm != 2);
 }
 
 void report() {
@@ -753,7 +843,7 @@ void menu() {
         case 5: printf("\nAdvanced searching\n"); advanced_search(); break;
         case 6: printf("\nWithdrawing money\n"); break;
         case 7: printf("\nDepositing money\n"); deposit(); break;
-        case 8: printf("\nTransferring money\n"); break;
+        case 8: printf("\nTransferring money\n"); transfer(); break;
         case 9: printf("\nReporting\n"); report(); break;
         case 10: print(); break;
         case 11: log_out(); break;

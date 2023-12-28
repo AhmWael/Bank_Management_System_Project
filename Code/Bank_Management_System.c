@@ -315,7 +315,7 @@ void add(){
 char*name=malloc(50);
 char*phone=malloc(50);
 char*email=malloc(50);
-int i=1,flag=1,month,year,check;
+int i=1,flag=0,month,year,check;
 double bal=0;
 date  d;
 
@@ -485,7 +485,7 @@ void modify_acc()
     int done = 1;
     do
     {
-        int field;
+        int field, flag;
         do
         {
             printf("[1] Name\n");
@@ -495,8 +495,21 @@ void modify_acc()
                 char str[50];
                 if (field == 1)
                 {
+                    do
+                    {
+                    flag=0;
                     printf("Enter the new name: ");
                     fgets(str, 49, stdin);
+                    int len = strlen(str);
+                    if (len > 0 && str[len - 1] == '\n')
+                        str[len - 1] = '\0';
+                    if(cont_dig(str))
+                    {
+                        printf("Only enter charecters!\n");
+                        flag=1;
+                    }
+                    }
+                    while(flag);
                     printf("The new name is: %s\n", str);
                     printf("[1] Confirm the modification\n[2] Cancel\n");
                     int confirm;

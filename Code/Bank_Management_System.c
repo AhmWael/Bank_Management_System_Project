@@ -45,7 +45,7 @@ void login();
 void load();
 void query_search();
 void advanced_search();
-//add function
+void add ();
 void delete_account();
 void modify_acc();
 //withdraw function
@@ -71,6 +71,9 @@ void saveTransaction(unsigned long long account_no, unsigned long long from, uns
 /****Input Validation Functions***/
 int readInteger();
 unsigned long long read_account_no();
+int cont_dig(char*x);
+int cont_spec(char*x);
+char*readPhone();
 double readDouble();
 char *readEmail();
 /*********************************/
@@ -306,6 +309,100 @@ void advanced_search(){
             printf("\nNo match found.\nTry entering different keyword.\n");
     }
 }
+void add(){
+ unsigned long long x,acc_n;
+char*name=malloc(50);
+char*phone=malloc(50);
+char*email=malloc(50);
+int i=1,flag=1,month,year,check;
+double bal=0;
+date  d;
+
+    printf("Enter account number:");
+    do{
+    x=read_account_no();
+
+    if(x==0){
+        printf("only enter digits and make sure to enter 10 digits\nEnter a new one:");
+        continue;
+    }
+    flag=1;
+    for(i = 0;i<num_acc;i++){
+//printf("%llu\n",accounts[i]->account_no);
+            if(accounts[i]->account_no == x){
+                    printf("account number already exist\nEnter a new one:");
+                    flag=0;
+                    break;}
+
+    }
+
+
+    }while(!flag);
+    accounts=realloc(accounts,num_acc+1);
+num_acc++;
+ printf("\nenter name:");
+   do{
+    flag=0;
+
+    gets(name);
+    if(cont_dig(name))
+    {
+        printf("only enter charecters\nEnter again:");
+        flag=1;
+
+    }
+    }
+    while(flag);
+    printf("\nenter email:");
+    do{
+            flag=0;
+    email=readEmail();
+    if(!strcmp("NULL",email))
+    {
+        printf("incorrect format of email\nEnter again:");
+     flag=1;}
+    }while(flag);
+
+   /* printf("enter balance:");
+    do
+    { bal=readDouble();
+    if(bal==-1)
+        printf("please only enter digits\nEnter again:");
+    }while(bal==-1);*/
+
+    printf("\nenter phone number:");
+    do{
+            flag=0;
+      phone=readPhone();
+    if(!strcmp(phone,"NULL"))
+    {
+        printf("only enter digits\nEnter again:");
+        flag=1;
+    }
+
+    }
+    while(flag);
+
+time_t currentTime;
+    struct tm *localTime;
+
+    time(&currentTime);
+    localTime = localtime(&currentTime);
+           d.month=localTime->tm_mon + 1 ;
+           d.year=localTime->tm_year + 1900 ;
+
+
+ accounts[num_acc-1]= constAcc(x,name,email,bal,phone,d);
+ //printAccount(accounts[num_acc-1]);
+ printf("\nAccount added succecfully!\nExiting to main menu....\n");
+
+
+free(email);
+free(phone);
+free(name);
+
+}
+
 
 void delete_account(){
     printf("Enter account number: ");
@@ -1039,6 +1136,33 @@ unsigned long long read_account_no(){
     }
     return result;
 }
+char*readPhone()
+{
+    int count=0,j;
+     char inputs[100];
+     char*result_p=malloc(30);
+    fgets(inputs,99, stdin);
+    int len = strlen(inputs);
+    if(inputs[0] == '\n')
+        return "NULL";
+    if (len > 0 && inputs[len - 1] == '\n')
+        inputs[len - 1] = '\0';
+        int i;
+  for (i = 0; inputs[i] != '\0'; i ++)
+  {
+      if(i==0&&inputs[i]=='+'){
+        count++;
+        if(count>1)
+            return "NULL";
+        continue;}
+        if (isalpha(inputs[i])) return "NULL";
+  }
+
+    strcpy(result_p,inputs);
+
+
+  return result_p;
+}
 
 double readDouble()
 {
@@ -1061,41 +1185,84 @@ double readDouble()
         }
         if (!isdigit(inputs[i])) return -1;
     }
+
     double num =0,ans=0,dec=0;
     int post=0;
-    for (i = 0; inputs[i] != '.'; i ++) {
+    for (i = 0; (inputs[i] != '.')&&(inputs[i]!='\0'); i ++) {
         num *= 10;
         num += inputs[i] - '0';
+
     }
+if(inputs[i]=='.'){
     for(j=i+1;inputs[j]!='\0';j++)
     {
         dec*= 10;
         dec += inputs[j] - '0';
         post++;
+
     }
 
+}
     dec/=pow(10,post);
     ans=num+dec;
 
     return ans;
 }
+int cont_dig(char*x)
+{
+    while(*x)
+    {
+        if(isdigit(*x)||!isalpha(*x))
+            return 1;
+        x++;
+    }
+    return 0;
+}
+int cont_spec(char*x)
+{ int i=0;
+    for(i;x[i]!='\0';i++){
+        if(!isdigit(x[i])&&!isalpha(x[i]))
+    {
+        if(x[i]!='+'|| x[i]!='_'||x[i]!='-'||x[i]!='~')
+        return 0;
+    }
+        }
+    return 1;
+}
 char *readEmail()
 {
-    char buffer[30];
-    char*result_e=malloc(30);
-    int i=0,count=0;
-    fgets(buffer, 29, stdin);
+    char buffer[50];
+    char*result_e=malloc(50);
+    int i=0,count_at=0,count_dot=0,j;
+    fgets(buffer, 49, stdin);
+
+    if(cont_spec(buffer))
+    return "NULL";
+
     for(i;buffer[i]!='\0';i++)
     {
         if(buffer[i]=='@')
         {
-            count++;
-       if(count>1)
+            count_at++;
+       if(count_at>1)
             return "NULL";
+            for(j=i;buffer[j]!='\0';j++)
+            {
+                if(buffer[j]=='.')
+             {count_dot++;
+               if(buffer[i+1]=='\0'||buffer[i+3]=='\0'||buffer[0]=='.')
+                return "NULL";}
+            }
             if(buffer[i+1]=='.'||buffer[i+2]=='.'||buffer[0]=='@')
                 return "NULL";
         }
+
+        if(count_dot>1)
+            return "NULL";
+
     }
+    if(count_at!=1||count_dot!=1)
+        return "NULL";
     strcpy(result_e,buffer);
 
     return result_e;

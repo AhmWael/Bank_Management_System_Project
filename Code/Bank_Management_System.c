@@ -547,7 +547,7 @@ void modify_acc()
                     int len = strlen(str);
                     if (len > 0 && str[len - 1] == '\n')
                         str[len - 1] = '\0';
-                    if(cont_dig(str))
+                    if(cont_dig(str) || cont_spec(str))
                     {
                         printf("Only enter characters!\n");
                         flag=1;

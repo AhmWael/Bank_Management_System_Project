@@ -422,7 +422,15 @@ void modify_acc()
                 else if (field == 2)
                 {
                     printf("Enter the new e-mail address: ");
-                    fgets(str, 49, stdin); // no validation for e-mail address
+                    /*do
+                    {
+                        printf("Enter the new e-mail address: ");
+                        str = readEmail();                                          //error using read email with array, fix later
+                        if (str == "NULL")
+                            printf("Invalid E-mail Address!");
+                    }
+                    while (str == "NULL");*/
+                    fgets(str, 49, stdin);                                          // no validation for e-mail address
                     printf("The new e-mail address is: %s \n", str);
                     printf("[1] Confirm the modification\n[2] Cancel\n");
                     int confirm;
@@ -585,6 +593,16 @@ void transfer()
     do
     {
         valid = 1;
+        /*do
+        {
+            amount = readDouble();
+            if (amount == -1)
+            {
+                printf("Invalid Amount\n");
+                printf("Enter the amount to be transferred\nAmount{$}: ");                      //error using read double, fix later
+            }
+        }
+        while (amount == -1);*/
         scanf("%lf%*c", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
         if (amount > accounts[acc_index_sender]->balance)
         {
@@ -609,7 +627,7 @@ void transfer()
     printf("Sender's Account Number: %llu\n", account_no_sender);
     printf("Receiver's Account Number: %llu\n", account_no_receiver);
     printf("Amount: %.2lf\n", amount);
-    printf("[1] Confirm Transfer\n[2] Cancel\n");
+    printf("[1] Confirm Transaction\n[2] Cancel\n");
     int confirm;
     do
     {

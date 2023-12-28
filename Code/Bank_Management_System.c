@@ -79,7 +79,7 @@ unsigned long long read_account_no();
 bool cont_dig(char*x);
 bool cont_spec(char*x);
 char*readPhone();
-double readDouble();
+double readAmount();
 char *readEmail();
 /*********************************/
 int binary_search(unsigned long long account_no, int* acc_index);
@@ -398,7 +398,7 @@ void add()
 
     /* printf("enter balance:");
      do
-     { bal=readDouble();
+     { bal=readAmount();
      if(bal==-1)
          printf("please only enter digits\nEnter again:");
      }while(bal==-1);*/
@@ -737,17 +737,24 @@ void deposit()
         return;
     }
 
-    printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
     double amount;
-    scanf("%lf", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
-
-    while(amount > 10000.00 || amount <= 0)
+    do
     {
-        printf("\nError: Amount entered is beyond limit\n");
         printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
-        scanf("%.2lf", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
-    }
-    fflush(stdin);
+        amount = readAmount();
+        if (amount == -2)
+            printf("\nError: Amount entered cannot be negative\n");
+
+        else if (amount == -1)
+            printf("\nError: Invalid Amount (Do not enter characters)\n");
+
+        else if (amount == 0)
+            printf("\nError: Amount entered cannot be 0 $\n");
+
+        else if (amount > 10000.00)
+            printf("\nError: Amount entered is beyond limit\n");
+
+    } while (amount <= 0 || amount > 10000.00);
 
     printf("\nAccount Number: %llu\nDeposit Amount: $%.2lf\n\n", accNum, amount);
     printf("[1] Confirm the transaction\n[2] Cancel\n");
@@ -804,8 +811,10 @@ void transfer()
         {
             printf("Enter account number of the receiver: ");
             account_no_receiver = read_account_no();
-            if (account_no_receiver == 0 || account_no_receiver == account_no_sender)
-                printf("Invalid Account Number!\n");
+            if (account_no_receiver == 0)
+                printf("Error: Invalid Account Number!\n");
+            else if (account_no_receiver == account_no_sender)
+                printf("Error: Sender and receiver account numbers cannot be the same!\n");
         }
         while (account_no_receiver == 0 || account_no_receiver == account_no_sender);
         found_receiver = binary_search(account_no_receiver,&acc_index_receiver);
@@ -814,25 +823,27 @@ void transfer()
     }
     while (!found_receiver);
     double amount;
-    printf("Enter the amount to be transferred\nAmount{$}: ");
     int valid;
     do
     {
         valid = 1;
         do
         {
-            amount = readDouble();
-            if (amount == -1)
-            {
-                printf("Invalid Amount\n");
-                printf("Enter the amount to be transferred\nAmount{$}: ");
-            }
+            printf("Enter the amount to be transferred\nAmount{$}: ");
+            amount = readAmount();
+            if (amount == -2)
+                printf("Error: Amount entered cannot be negative\n");
+            else if (amount == -1)
+                printf("Error: Invalid Amount (Do not enter characters)\n");
+            else if (amount == 0)
+                printf("Error: Amount entered cannot be 0 $\n");
         }
-        while (amount == -1);
+        while (amount <= 0);
+
         if (amount > accounts[acc_index_sender]->balance)
         {
             valid = 0;
-            printf("Invalid Amount!\n");
+            printf("Error: Insufficient Balance\n");
             printf("[1] Enter another amount\n[2] Cancel\n");
             int confirm;
             do
@@ -1404,9 +1415,9 @@ char*readPhone()
     return result_p;
 }
 
-double readDouble()
+double readAmount()
 {
-    int count=0,j;
+    int count=0,j, neg = 0;
     char inputs[100];
     fgets(inputs,99, stdin);
     int len = strlen(inputs);
@@ -1416,6 +1427,7 @@ double readDouble()
     {
         inputs[len - 1] = '\0';
     }
+
     int i;
     for (i = 0; inputs[i] != '\0'; i ++)
     {
@@ -1426,9 +1438,15 @@ double readDouble()
                 return -1;
             continue;
         }
+        if (i == 0 && inputs[i] == '-')
+        {
+            neg = 1;
+            continue;
+        }
         if (!isdigit(inputs[i])) return -1;
     }
-
+    if (neg == 1)
+        return -2; // -2 means amount entered is negative
     double num =0,ans=0,dec=0;
     int post=0;
     for (i = 0; (inputs[i] != '.')&&(inputs[i]!='\0'); i ++)
@@ -1470,7 +1488,7 @@ bool cont_spec(char*x)
     {
         if(!isdigit(x[i])&&!isalpha(x[i]))
         {
-            if(x[i]!='+'|| x[i]!='_'||x[i]!='-'||x[i]!='~')
+            if(x[i]!='+' && x[i]!='_' && x[i]!='-' && x[i]!='~')
                 return 0;
         }
     }
@@ -1492,6 +1510,8 @@ char *readEmail()
 
     for(i; buffer[i]!='\0'; i++)
     {
+        if (buffer[i] == ' ')
+            return "NULL";
         if(buffer[i]=='@')
         {
             count_at++;

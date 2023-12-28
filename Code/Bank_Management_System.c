@@ -13,6 +13,7 @@ Abdelrahman Ahmed Mohamed Agha 8918
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <time.h>
 
 bool logged_in = 0;
 int num_acc = 0;
@@ -394,7 +395,7 @@ time_t currentTime;
 
  accounts[num_acc-1]= constAcc(x,name,email,bal,phone,d);
  //printAccount(accounts[num_acc-1]);
-    save():
+    save();
  printf("\nAccount added succecfully!\nExiting to main menu....\n");
 
 
@@ -1004,12 +1005,12 @@ void menu() {
     switch (input) {
         // all the print statements here are just temporary place holders for the actual functions
         // please replace them once the function has been made
-        case 1: printf("\nAdding an account\n"); break;
+        case 1: printf("\nAdding an account\n");add(); break;
         case 2: printf("\nDeleting an account\n"); delete_account(); break;
         case 3: printf("\nModifying account\n"); modify_acc(); break;
         case 4: printf("\nSearching for an account\n"); query_search(); break;
         case 5: printf("\nAdvanced searching\n"); advanced_search(); break;
-        case 6: printf("\nWithdrawing money\n"); break;
+        case 6: printf("\nWithdrawing money\n");withdraw();break;
         case 7: printf("\nDepositing money\n"); deposit(); break;
         case 8: printf("\nTransferring money\n"); transfer(); break;
         case 9: printf("\nReporting\n"); report(); break;

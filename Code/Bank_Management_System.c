@@ -107,8 +107,8 @@ void login()
     int i=0, flagu=0,flagp=0,inv_p=0,inv_u=0;
     char *c = malloc(100);
     char *x = malloc(50);
-    char*pass=malloc(50);
-    char*token;
+    char *pass = malloc(50);
+    char *token;
     fptr = fopen("users.txt", "r");
     if (fptr == NULL)
     {
@@ -330,12 +330,12 @@ void advanced_search()
 void add()
 {
     unsigned long long x,acc_n;
-    char*name=malloc(50);
-    char*phone=malloc(50);
-    char*email=malloc(50);
+    char *name = malloc(50);
+    char *phone = malloc(50);
+    char *email = malloc(50);
     int i=1,flag=0,month,year,check;
     double bal=0.0;
-    date  d;
+    date d;
 
     printf("Enter account number:");
     do
@@ -344,16 +344,15 @@ void add()
 
         if(x==0)
         {
-            printf("only enter digits and make sure to enter 10 digits\nEnter a new one:");
+            printf("Invalid Input! Enter digits and make sure to enter 10 digits\nEnter a new one:");
             continue;
         }
         flag=1;
         for(i = 0; i<num_acc; i++)
         {
-//printf("%llu\n",accounts[i]->account_no);
             if(accounts[i]->account_no == x)
             {
-                printf("account number already exist\nEnter a new one:");
+                printf("Account number already exist\nEnter a new one:");
                 flag=0;
                 break;
             }
@@ -363,34 +362,34 @@ void add()
 
     }
     while(!flag);
-    accounts=realloc(accounts,num_acc+1);
+    accounts=realloc(accounts,(num_acc+1) * sizeof(account*));
     num_acc++;
-    printf("\nenter name:");
+    printf("\nEnter name:");
     do
     {
         flag=0;
 
         gets(name);
         if (name[0] == '\0') {
-            printf("name can not be empty\nEnter again:");
+            printf("Name can not be empty\nEnter again:");
             flag=1;
         }
         if(cont_dig(name))
         {
-            printf("only enter characters\nEnter again:");
+            printf("Only enter characters\nEnter again:");
             flag=1;
 
         }
     }
     while(flag);
-    printf("\nenter email:");
+    printf("\nEnter email: ");
     do
     {
         flag=0;
         email=readEmail();
         if(!strcmp("NULL",email))
         {
-            printf("incorrect format of email\nEnter again:");
+            printf("Incorrect format of email\nEnter again: ");
             flag=1;
         }
     }
@@ -403,14 +402,14 @@ void add()
          printf("please only enter digits\nEnter again:");
      }while(bal==-1);*/
 
-    printf("\nenter phone number:");
+    printf("\nEnter phone number: ");
     do
     {
         flag=0;
         phone=readPhone();
         if(strcmp(phone,"NULL") == 0)
         {
-            printf("only enter digits\nEnter again:");
+            printf("Only enter digits\nEnter again: ");
             flag=1;
         }
 
@@ -426,10 +425,8 @@ void add()
     d.year=localTime->tm_year + 1900 ;
 
     accounts[num_acc-1]= constAcc(x,name,email,bal,phone,d);
-    printAccount(accounts[num_acc-1]);
     save();
     printf("\nAccount added successfully!\nExiting to main menu....\n");
-
 
     free(email);
     free(phone);
@@ -477,6 +474,11 @@ void delete_account()
                         confirm = readInteger();
                         if (confirm == 1)
                         {
+                            char acc_num[15];
+                            snprintf(acc_num, sizeof(acc_num), "%llu.txt", accounts[i]->account_no);
+                            if (unlink(acc_num) != 0) {
+                                perror("Error removing file");
+                            }
                             distAcc(accounts[i]);
                             num_acc--;
                             int j;
@@ -702,7 +704,7 @@ void withdraw()
             double oldBalance = accounts[acc_index]->balance;
             accounts[acc_index]->balance -= (double)amount;
             printf("Success!\n\nPrevious balance: $%.2f\nNew balance: $%.2f\n\n", oldBalance, accounts[acc_index]->balance);
-            saveTransaction(accNum, 5, accNum, amount); //from: 5 = bank,  to: accNum,  amount: $
+            saveTransaction(accNum, accNum, 5, amount); //from: accNum,  to: 5 = bank,  amount: $
             save();
         }
         else if (confirm == 2)

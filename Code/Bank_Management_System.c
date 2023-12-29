@@ -663,6 +663,7 @@ void modify_acc()
 void withdraw()
 {
     unsigned long long accNum;
+    int flag=0;
     do
     {
         printf("\nEnter account number\nAccount Number: ");
@@ -679,23 +680,44 @@ void withdraw()
     if (!found)
     {
         printf("\nThe Specified Account is not found!\n\n");
-        main();
+        withdraw();
         return;
     }
-    printf("\nEnter amount to deposit to account [limit: 10,000$]\nAmount{$}: ");
-    float amount;
-    scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
+       double amount,oldBalance = accounts[acc_index]->balance;
 
-    while(amount > 10000.00)
+      do
     {
-        printf("\nError: Amount entered is beyond limit\n");
         printf("\nEnter amount to withdraw from account [limit: 10,000$]\nAmount{$}: ");
-        scanf("%f", &amount);  //VALIDATE INPUT MAKE SURE ONLY FLOAT IS ENTERED {WILL DO LATER}
-    }
-    fflush(stdin);
+        amount = readAmount();
+        if (amount == -2){
+            printf("\nError: Amount entered cannot be negative\n");
+            flag=1;
+        }
 
+        else if (amount == -1){
+            printf("\nError: Invalid Amount (Do not enter characters)\n");
+            flag=1;
+        }
+
+        else if (amount == 0){
+            printf("\nError: Amount entered cannot be 0 $\n");
+            flag=1;
+        }
+
+        else if (amount > 10000.00){
+            printf("\nError: Amount entered is beyond limit\n");
+            flag=1;
+        }
+            else if(oldBalance<amount){
+                printf("\nError: Amount entered is larger than balance\n");
+                flag=1;
+            }
+
+    } while (flag);
+    fflush(stdin);
+    printf("[1] Confirm the transaction\n[2] Cancel\n");
     printf("\nAccount Number: %llu\nWithdrawn Amount: $%.2f\n\n", accNum, amount);
-    printf("To confirm the transaction enter 1\nTo cancel enter 2\n");
+   
     int confirm;
     do
     {
@@ -703,10 +725,8 @@ void withdraw()
         if (confirm == 1)
         {
             printf("\nWithdrawing $%.2f from account...\n", amount);
-
-            double oldBalance = accounts[acc_index]->balance;
             accounts[acc_index]->balance -= (double)amount;
-            printf("Success!\n\nPrevious balance: $%.2f\nNew balance: $%.2f\n\n", oldBalance, accounts[acc_index]->balance);
+            printf("Success!\n\nPrevious balance: $%.2f\nNew balance: $%.2f\n\nReturning to main menu...", oldBalance, accounts[acc_index]->balance);
             saveTransaction(accNum, accNum, 5, amount); //from: accNum,  to: 5 = bank,  amount: $
             save();
         }

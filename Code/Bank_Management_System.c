@@ -109,6 +109,9 @@ void login()
     char *x = malloc(50);
     char *pass = malloc(50);
     char *token;
+    current_employee.username = malloc(50);
+    current_employee.password = malloc(50);
+
     fptr = fopen("users.txt", "r");
     if (fptr == NULL)
     {
@@ -118,23 +121,23 @@ void login()
     do
     {
         rewind(fptr);                //used to reset pointer to beginning of file
-        printf("Enter username:");
+        printf("Enter username: ");
         scanf("%s", x);
         i=1;
         while(i&&!feof(fptr))
         {
-            fgets(c,100,fptr);
+            fgets(c,99,fptr);
             token=strtok(c," ");           //used to separate password and username
             i=strcmp(token,x);
         }
         if(!i)
         {
             flagu=1;
-            current_employee.username=x;
+            strcpy(current_employee.username, x);
             token=strtok(NULL," \n"); //checks second part of string
             do
             {
-                printf("Enter password:");
+                printf("Enter password: ");
                 scanf("%s",pass);
                 if(strcmp(token,pass))
                 {
@@ -145,7 +148,7 @@ void login()
                 else
                 {
                     flagp=1;
-                    current_employee.password=pass;
+                    strcpy(current_employee.password, pass);
                     break;
                 }
             }
@@ -492,7 +495,7 @@ void delete_account()
                         }
                         else if (confirm == 2)
                         {
-                            printf("\nCanceled deletion!\n");
+                            printf("\nCancelled deletion!\n");
                             return;
                         }
                         else
@@ -571,7 +574,7 @@ void modify_acc()
                         printf("Name changed Successfully!\n");
                     }
                     else if (confirm == 2)
-                        printf("\nName Modification Canceled!\n");
+                        printf("\nName Modification Cancelled!\n");
                     else
                         printf("Invalid Input! Enter 1 or 2.\n");
                 }
@@ -602,7 +605,7 @@ void modify_acc()
                         printf("E-mail Address changed Successfully!\n");
                     }
                     else if (confirm == 2)
-                        printf("\nE-mail Modification Canceled!\n");
+                        printf("\nE-mail Modification Cancelled!\n");
                     else
                         printf("Invalid Input! Enter 1 or 2.\n");
                 }
@@ -631,7 +634,7 @@ void modify_acc()
                         printf("Mobile changed Successfully!\n");
                     }
                     else if (confirm == 2)
-                        printf("\nMobile Modification Canceled!\n");
+                        printf("\nMobile Modification Cancelled!\n");
                     else
                         printf("Invalid Input! Enter 1 or 2.\n");
                 }
@@ -776,7 +779,7 @@ void deposit()
         }
         else if (confirm == 2)
         {
-            printf("\nTransaction Canceled!\n");
+            printf("\nTransaction Cancelled!\n");
             return;
         }
         else
@@ -884,7 +887,7 @@ void transfer()
             printf("New Balance: %.2lf\t\t\tNew Balance: %.2lf\n", accounts[acc_index_sender]->balance, accounts[acc_index_receiver]->balance);
         }
         else if (confirm == 2)
-            printf("\nTransaction Canceled!\n");
+            printf("\nTransaction Cancelled!\n");
         else
             printf("Invalid Input! Enter 1 or 2.\n");
     }
@@ -1045,10 +1048,10 @@ void log_out()
     if (conf == 1)
     {
         logged_in = 0;
-        printf("Logging out\nGoodbye %s\n",current_employee.username); // should print the username of employee
+        printf("Logging out\nGoodbye %s\n",current_employee.username);
         return;
     }
-    printf("Logging out has been canceled\n");
+    printf("Logging out has been cancelled\n");
 }
 
 void quit()
@@ -1068,7 +1071,7 @@ void quit()
         printf("Quitting the program.\nGoodbye");
         exit(0);
     }
-    printf("Quitting the program has been canceled\n");
+    printf("Quitting the program has been cancelled\n");
 }
 
 void menu()
@@ -1096,25 +1099,8 @@ void menu()
         return ;
     }
     printf("\nWelcome to the main menu.\n");
-    printf("[1]  Add an account\n");
-    printf("[2]  Delete an account\n");
-    printf("[3]  Modify the data of an account\n");
-    printf("[4]  Search for an account using account number\n");
-    printf("[5]  Advanced searching\n");
-    printf("[6]  Withdraw money from an account\n");
-    printf("[7]  Deposit money into an account\n");
-    printf("[8]  Transfer money from one account to another\n");
-    printf("[9]  Report about the transactions of an account\n");
-    printf("[10] Print data of all accounts\n");
-    printf("[11] Log out\n");
-    printf("[12] Quit the program entirely\n");
-    int input = readInteger();
-    while(!(input == 1 || input == 2 || input == 3
-            || input == 4 || input == 5 || input == 6
-            || input == 7 || input == 8 || input == 9
-            || input == 10 || input == 11 || input == 12))
-    {
-        printf("Invalid input! Input should be between 1 and 12\n\n");
+    int input;
+    do{
         printf("[1]  Add an account\n");
         printf("[2]  Delete an account\n");
         printf("[3]  Modify the data of an account\n");
@@ -1126,13 +1112,14 @@ void menu()
         printf("[9]  Report about the transactions of an account\n");
         printf("[10] Print data of all accounts\n");
         printf("[11] Log out\n");
-        printf("[12] Quit the program entirely\n");
+        printf("[12] Quit the program\n");
         input = readInteger();
-    }
+        if(input < 1 || input > 12)
+            printf("Invalid input! Input should be between 1 and 12\n\n");
+    }while(input < 1 || input > 12);
+
     switch (input)
     {
-    // all the print statements here are just temporary place holders for the actual functions
-    // please replace them once the function has been made
     case 1:
         printf("\nAdding an account\n");
         add();
@@ -1259,7 +1246,6 @@ void distAcc(account *p)
     free(p->name);
     free(p->email);
     free(p->phone);
-    //free(p->date_opened); convert date to pointer
     free(p);
 }
 
@@ -1386,7 +1372,7 @@ unsigned long long read_account_no()
     return result;
 }
 
-char*readPhone()
+char *readPhone()
 {
     int count=0,j;
     char inputs[100];

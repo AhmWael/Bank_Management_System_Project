@@ -1515,7 +1515,7 @@ bool cont_spec(char *x, int mode)
         {
             if(!isdigit(x[i])&&!isalpha(x[i]))
             {
-                if(x[i]!='+' && x[i]!='_' && x[i]!='-' && x[i]!='~' && x[i]!='@' && x[i]!='.')
+                if(x[i]!='+' && x[i]!='_' && x[i]!='-' && x[i]!='@' && x[i]!='.')
                     return 1;
             }
         }

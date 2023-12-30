@@ -367,21 +367,28 @@ void add()
     while(!flag);
     accounts=realloc(accounts,(num_acc+1) * sizeof(account*));
     num_acc++;
-    printf("\nEnter name:");
     do
     {
         flag=0;
-
-        gets(name);
-        if (name[0] == '\0') {
-            printf("Name can not be empty\nEnter again:");
+        printf("Enter name: ");
+        fgets(name, 49, stdin);
+        if(name[0] == '\n')
+        {
+            printf("Invalid Input! Can't leave field empty!\n");
             flag=1;
         }
-        if(cont_dig(name))
+        if(name[0] == ' ')
         {
-            printf("Only enter characters\nEnter again:");
+            printf("Invalid Input! Can't start with a space!\n");
             flag=1;
-
+        }
+        int len = strlen(name);
+        if (len > 0 && name[len - 1] == '\n')
+            name[len - 1] = '\0';
+        if(cont_dig(name) || cont_spec(name, 1))
+        {
+            printf("Invalid Input! Only enter characters!\n");
+            flag=1;
         }
     }
     while(flag);
@@ -1192,7 +1199,7 @@ void menu()
     case 11:
         log_out();
         break;
-    default :
+    case 12:
         quit();
     }
 }

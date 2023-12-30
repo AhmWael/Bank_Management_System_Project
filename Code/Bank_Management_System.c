@@ -247,7 +247,7 @@ void query_search()
 
 void advanced_search()
 {
-    printf("Enter keyword: ");
+    printf("Enter keyword (enter -1 to return to menu): ");
     char key[50];
     fgets(key, 49, stdin);
     int len = strlen(key);
@@ -255,9 +255,13 @@ void advanced_search()
     {
         key[len - 1] = '\0';
     }
+    if(!strcmp(key, "-1")){
+        printf("Returning to Main Menu.\n");
+        return;
+    }
     while(!((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= '0' && key[0] <= '9')))
     {
-        printf("Invalid input, please enter keyword starting with a letter or a number only: ");
+        printf("Invalid input! Please enter keyword starting with a letter or a number only: ");
         gets(key);
     }
     printf("\nSearching for \"%s\"\n", key);
@@ -294,8 +298,10 @@ void advanced_search()
                 found = 1;
             }
         }
-        if(!found)
+        if(!found){
             printf("\nNo match found.\nTry entering different keyword.\n");
+            advanced_search();
+        }
     }
     else if(search_crit == 2)  // Search in name, email
     {
@@ -326,8 +332,10 @@ void advanced_search()
                 found = 1;
             }
         }
-        if(!found)
+        if(!found){
             printf("\nNo match found.\nTry entering different keyword.\n");
+            advanced_search();
+        }
     }
 }
 void add()
@@ -447,11 +455,16 @@ void add()
 
 void delete_account()
 {
-    printf("Enter account number: ");
+    printf("Enter account number (enter -1 to return to menu): ");
 
     unsigned long long input;
     input = read_account_no();
 
+    if(input == 1)
+    {
+        printf("Returning to Main Menu.\n");
+        return;
+    }
     while(input == 0)
     {
         printf("Invalid Input, Enter valid account number(10 digits): ");
@@ -1389,6 +1402,9 @@ unsigned long long read_account_no()
     if (len > 0 && buffer[len - 1] == '\n')
     {
         buffer[len - 1] = '\0';
+    }
+    if(!strcmp(buffer, "-1")){
+        return 1; // to break and return to main menu
     }
     int i;
     for (i = 0; buffer[i] != '\0'; i++)

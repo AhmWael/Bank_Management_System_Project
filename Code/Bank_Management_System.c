@@ -78,9 +78,10 @@ int readInteger();
 unsigned long long read_account_no();
 bool cont_dig(char *x);
 bool cont_spec(char *x, int mode);
-char*readPhone();
+char *readPhone();
 double readAmount();
 char *readEmail();
+char *readName();
 /*********************************/
 int binary_search(unsigned long long account_no, int *acc_index);
 int SortByNum(const void *a,const void *b);
@@ -377,22 +378,19 @@ void add()
     do
     {
         flag=0;
-        printf("Enter name: ");
-        fgets(name, 49, stdin);
-        if(name[0] == '\n')
+        printf("Enter the new name: ");
+        strcpy(name, readName());
+        if(!strcmp(name, "1"))
         {
             printf("Invalid Input! Can't leave field empty!\n");
             flag=1;
         }
-        if(name[0] == ' ')
+        if(!strcmp(name, "2"))
         {
             printf("Invalid Input! Can't start with a space!\n");
             flag=1;
         }
-        int len = strlen(name);
-        if (len > 0 && name[len - 1] == '\n')
-            name[len - 1] = '\0';
-        if(cont_dig(name) || cont_spec(name, 1))
+        if(!strcmp(name, "3"))
         {
             printf("Invalid Input! Only enter characters!\n");
             flag=1;
@@ -567,21 +565,18 @@ void modify_acc()
                 {
                     flag=0;
                     printf("Enter the new name: ");
-                    fgets(str, 49, stdin);
-                    if(str[0] == '\n')
+                    strcpy(str, readName());
+                    if(!strcmp(str, "1"))
                     {
                         printf("Invalid Input! Can't leave field empty!\n");
                         flag=1;
                     }
-                    if(str[0] == ' ')
+                    if(!strcmp(str, "2"))
                     {
                         printf("Invalid Input! Can't start with a space!\n");
                         flag=1;
                     }
-                    int len = strlen(str);
-                    if (len > 0 && str[len - 1] == '\n')
-                        str[len - 1] = '\0';
-                    if(cont_dig(str) || cont_spec(str, 1))
+                    if(!strcmp(str, "3"))
                     {
                         printf("Invalid Input! Only enter characters!\n");
                         flag=1;
@@ -1589,6 +1584,24 @@ char *readEmail()
     strcpy(result_e,buffer);
 
     return result_e;
+}
+
+char *readName()
+{
+    char name[50];
+    char *result = malloc(50);
+    fgets(name, 49, stdin);
+    if(name[0] == '\n')
+        return "1";
+    if(name[0] == ' ')
+        return "2";
+    int len = strlen(name);
+    if (len > 0 && name[len - 1] == '\n')
+        name[len - 1] = '\0';
+    if(cont_dig(name) || cont_spec(name, 1))
+        return "3";
+    strcpy(result, name);
+    return result;
 }
 
 int binary_search(unsigned long long account_no, int *mid)

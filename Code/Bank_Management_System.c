@@ -63,12 +63,12 @@ void log_out();
 void quit();
 void menu();
 
-account* constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
+account *constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
 void printAccount(account *a);
 void distAcc(account *p);
 date *constDate(int month, int year);
 void setDate(account *a, int month, int year);
-account* decodeText(char* line);
+account *decodeText(char *line);
 void unload();
 
 void create_transaction_file(unsigned long long account_no);
@@ -76,13 +76,13 @@ void saveTransaction(unsigned long long account_no, unsigned long long from, uns
 /****Input Validation Functions***/
 int readInteger();
 unsigned long long read_account_no();
-bool cont_dig(char*x);
-bool cont_spec(char*x);
+bool cont_dig(char *x);
+bool cont_spec(char *x, int mode);
 char*readPhone();
 double readAmount();
 char *readEmail();
 /*********************************/
-int binary_search(unsigned long long account_no, int* acc_index);
+int binary_search(unsigned long long account_no, int *acc_index);
 int SortByNum(const void *a,const void *b);
 int SortByName(const void *a,const void *b);
 int SortByDate(const void *a,const void *b);
@@ -549,12 +549,22 @@ void modify_acc()
                     flag=0;
                     printf("Enter the new name: ");
                     fgets(str, 49, stdin);
+                    if(str[0] == '\n')
+                    {
+                        printf("Invalid Input! Can't leave field empty!\n");
+                        flag=1;
+                    }
+                    if(str[0] == ' ')
+                    {
+                        printf("Invalid Input! Can't start with a space!\n");
+                        flag=1;
+                    }
                     int len = strlen(str);
                     if (len > 0 && str[len - 1] == '\n')
                         str[len - 1] = '\0';
-                    if(cont_dig(str) || cont_spec(str))
+                    if(cont_dig(str) || cont_spec(str, 1))
                     {
-                        printf("Only enter characters!\n");
+                        printf("Invalid Input! Only enter characters!\n");
                         flag=1;
                     }
                 }
@@ -645,19 +655,19 @@ void modify_acc()
         while (field != 1 && field != 2 && field != 3);
         do
         {
-            printf("[1] Return to Main Menu \n");
-            printf("[2] Modify Another Field\n");
+            printf("[1] Modify Another Field\n");
+            printf("[2] Return to Main Menu \n");
             done = readInteger();
             if (done == 1)
-                menu();
-            else if (done == 2)
                 continue;
+            else if (done == 2)
+                menu();
             else
                 printf("Invalid Input! Enter 1 or 2.\n");
         }
         while (done != 1 && done != 2);
     }
-    while (done == 2);
+    while (done == 1);
 
 }
 void withdraw()
@@ -715,9 +725,9 @@ void withdraw()
 
     } while (flag);
     fflush(stdin);
-    printf("[1] Confirm the transaction\n[2] Cancel\n");
     printf("\nAccount Number: %llu\nWithdrawn Amount: $%.2f\n\n", accNum, amount);
-   
+    printf("[1] Confirm the transaction\n[2] Cancel\n");
+
     int confirm;
     do
     {
@@ -1478,33 +1488,44 @@ double readAmount()
 
     return ans;
 }
-bool cont_dig(char*x)
-{
-    while(*x)
-    {
-        if(isdigit(*x))
-            return 1;
-        x++;
-    }
-    return 0;
-}
-bool cont_spec(char*x)
+bool cont_dig(char *x)
 {
     int i=0;
     for(i; x[i]!='\0'; i++)
     {
-        if(!isdigit(x[i])&&!isalpha(x[i]))
-        {
-            if(x[i]!='+' && x[i]!='_' && x[i]!='-' && x[i]!='~')
-                return 0;
-        }
+        if(isdigit(x[i]))
+            return 1;
     }
-    return 1;
+    return 0;
+}
+bool cont_spec(char *x, int mode)
+{
+    if(mode == 1){
+        int i=0;
+        for(i; x[i]!='\0'; i++)
+        {
+            if(ispunct(x[i]))
+                return 1;
+        }
+        return 0;
+    }
+    else if(mode == 2){
+        int i=0;
+        for(i; x[i]!='\0'; i++)
+        {
+            if(!isdigit(x[i])&&!isalpha(x[i]))
+            {
+                if(x[i]!='+' && x[i]!='_' && x[i]!='-' && x[i]!='~' && x[i]!='@' && x[i]!='.')
+                    return 1;
+            }
+        }
+        return 0;
+    }
 }
 char *readEmail()
 {
     char buffer[50];
-    char*result_e=malloc(50);
+    char *result_e = malloc(50);
     int i=0,count_at=0,count_dot=0,j;
     fgets(buffer, 49, stdin);
     if(buffer[0] == '\n')
@@ -1512,7 +1533,7 @@ char *readEmail()
     int len = strlen(buffer);
     if (len > 0 && buffer[len - 1] == '\n')
         buffer[len - 1] = '\0';
-    if(cont_spec(buffer))
+    if(cont_spec(buffer, 2))
         return "NULL";
 
     for(i; buffer[i]!='\0'; i++)
@@ -1548,7 +1569,7 @@ char *readEmail()
     return result_e;
 }
 
-int binary_search(unsigned long long account_no, int* mid)
+int binary_search(unsigned long long account_no, int *mid)
 {
     int low = 0, high = num_acc-1, found = 0;
     while (!found && low <= high)

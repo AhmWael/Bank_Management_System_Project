@@ -247,23 +247,22 @@ void query_search()
 
 void advanced_search()
 {
-    printf("Enter keyword (enter -1 to return to menu): ");
+    printf("Enter keyword [enter -1 to return to menu]: ");
     char key[50];
-    fgets(key, 49, stdin);
-    int len = strlen(key);
-    if (len > 0 && key[len - 1] == '\n')
-    {
-        key[len - 1] = '\0';
-    }
-    if(!strcmp(key, "-1")){
-        printf("Returning to Main Menu.\n");
-        return;
-    }
-    while(!((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= '0' && key[0] <= '9')))
-    {
-        printf("Invalid input! Please enter keyword starting with a letter or a number only: ");
-        gets(key);
-    }
+    int len;
+    do{
+        fgets(key, 49, stdin);
+        len = strlen(key);
+        if (len > 0 && key[len - 1] == '\n')
+            key[len - 1] = '\0';
+        if(!strcmp(key, "-1")){
+            printf("Returning to Main Menu.\n");
+            return;
+        }
+        if(!((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= '0' && key[0] <= '9')))
+            printf("Invalid input!\nPlease enter keyword starting with a letter or a number only[enter -1 to return to menu]: ");
+    }while(!((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= '0' && key[0] <= '9')));
+
     printf("\nSearching for \"%s\"\n", key);
     int i, char_count = 0, search_crit = 0;
     if(key[0] >= '0' && key[0] <= '9')
@@ -455,24 +454,24 @@ void add()
 
 void delete_account()
 {
-    printf("Enter account number (enter -1 to return to menu): ");
+    printf("Enter account number [enter -1 to return to menu]: ");
 
     unsigned long long input;
     input = read_account_no();
+
+    while(input == 0)
+    {
+        printf("Invalid Input!\nEnter valid account number(10 digits)[enter -1 to return to menu]: ");
+        input = read_account_no();
+    }
 
     if(input == 1)
     {
         printf("Returning to Main Menu.\n");
         return;
     }
-    while(input == 0)
-    {
-        printf("Invalid Input, Enter valid account number(10 digits): ");
-        input = read_account_no();
-    }
 
     bool found = 0;
-
     int i;
     for(i = 0; i<num_acc; i++)
     {

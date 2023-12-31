@@ -896,7 +896,7 @@ void transfer()
         {
             valid = 0;
             printf("Error: Insufficient Balance\n");
-            printf("[1] Enter another amount\n[2] Cancel\n");
+            printf("[1] Enter another amount\n[2] Cancel and return to Main Menu\n");
             int confirm;
             do
             {
@@ -915,7 +915,7 @@ void transfer()
     printf("Sender's Account Number: %llu\n", account_no_sender);
     printf("Receiver's Account Number: %llu\n", account_no_receiver);
     printf("Amount{$}: %.2lf\n", amount);
-    printf("[1] Confirm Transaction\n[2] Cancel\n");
+    printf("[1] Confirm Transaction\n[2] Cancel and return to Main Menu\n");
     int confirm;
     do
     {

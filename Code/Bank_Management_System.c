@@ -2,7 +2,7 @@
 Bank Management System Project
 Made by:
 Ahmad Zaki Ahmad Zaki Mahrous 8910
-Ahmad Wael Mohamed Gaber 8836
+Ahmed Wael Mohamed Gaber 8836
 Seifeldin Ahmed Maazouz Zeid Ismail 8927
 Asser Mohamed Ahmed Hanafy Mahmoud 8833
 Abdelrahman Ahmed Mohamed Agha 8918
@@ -311,19 +311,20 @@ void advanced_search()
         int i;
         for(i = 0; i<num_acc; i++)
         {
-            char *name_str = accounts[i]->name;
-            char *mail_str = accounts[i]->email;
+            char *name_str = malloc(strlen(accounts[i]->name) + 1);
+            char *mail_str = malloc(strlen(accounts[i]->email) + 1);
+            strcpy(name_str, accounts[i]->name);
+            strcpy(mail_str, accounts[i]->email);
 
             int j;
+            for(j = 0; key[j]; j++)
+                key[j] = tolower(key[j]);
+
             for(j = 0; name_str[j]; j++)
-            {
                 name_str[j] = tolower(name_str[j]);
-            }
 
             for(j = 0; mail_str[j]; j++)
-            {
                 mail_str[j] = tolower(mail_str[j]);
-            }
 
             if(strstr(name_str, key) || strstr(mail_str, key))
             {
@@ -331,6 +332,8 @@ void advanced_search()
                 printf("\n");
                 found = 1;
             }
+            free(name_str);
+            free(mail_str);
         }
         if(!found){
             printf("\nNo match found.\nTry entering different keyword.\n");
@@ -501,6 +504,7 @@ void delete_account()
                             }
                             distAcc(accounts[i]);
                             num_acc--;
+                            accounts = realloc(accounts, num_acc * sizeof(account*));
                             int j;
                             for(j = i; j < num_acc; j++)
                             {
@@ -711,6 +715,7 @@ void withdraw()
 
       do
     {
+        flag = 0;
         printf("\nEnter amount to withdraw from account [limit: 10,000$]\nAmount{$}: ");
         amount = readAmount();
         if (amount == -2){
@@ -732,10 +737,10 @@ void withdraw()
             printf("\nError: Amount entered is beyond limit\n");
             flag=1;
         }
-            else if(oldBalance<amount){
-                printf("\nError: Amount entered is larger than balance\n");
-                flag=1;
-            }
+        else if(oldBalance<amount){
+            printf("\nError: Amount entered is larger than balance\n");
+            flag=1;
+        }
 
     } while (flag);
     fflush(stdin);
@@ -754,8 +759,10 @@ void withdraw()
             saveTransaction(accNum, accNum, 5, amount); //from: accNum,  to: 5 = bank,  amount: $
             save();
         }
-        else if (confirm == 2)
+        else if (confirm == 2){
+            printf("\nTransaction Cancelled!\n");
             return;
+        }
         else
             printf("Invalid Input! Enter 1 or 2.\n");
     }

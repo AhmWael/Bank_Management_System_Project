@@ -1112,7 +1112,7 @@ void quit()
     while(conf != 1 && conf != 2)
     {
         printf("Invalid input! You must enter either 1 or 2.\n");
-        printf("[1] Confirm logout\n[2] Cancel\n");
+        printf("[1] Confirm quit\n[2] Cancel\n");
         conf = readInteger();
     }
     if (conf == 1)

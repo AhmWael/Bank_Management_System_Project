@@ -115,7 +115,8 @@ void login()
     fptr = fopen("users.txt", "r");
     if (fptr == NULL)
     {
-        printf("Error opening file");
+        printf("Error: users.txt file not found\nQuitting the program.\n");
+        fclose(fptr);
         exit(1);
     }
     do
@@ -184,9 +185,14 @@ void load()
     printf("\nLoading accounts...\n");
     FILE* fp;
     fp = fopen("accounts.txt", "r");
-    if(!fp)
+    if(fp == NULL)
     {
+<<<<<<< Updated upstream
         printf("Error: accounts.txt file not found");
+=======
+        printf("Error: accounts.txt file not found\nQuitting the program.\n");
+        fclose(fp);
+>>>>>>> Stashed changes
         exit(2);
     }
 
@@ -498,6 +504,7 @@ void delete_account()
                             snprintf(acc_num, sizeof(acc_num), "%llu.txt", accounts[i]->account_no);
                             if (unlink(acc_num) != 0) {
                                 perror("Error removing file");
+                                printf("\nHint: disable antivirus program on your computer\n");
                             }
                             distAcc(accounts[i]);
                             num_acc--;
@@ -989,10 +996,9 @@ void report()
     fp = fopen(inputs, "r");
     if (fp == NULL)   // this shouldn't happen as we have found the account number in the accounts array
     {
-        printf("Error opening file %s\n", inputs);
-        printf("Quitting the program.\n");
+        printf("Error opening file %s\nQuitting the program.\n", inputs);
         fclose(fp);
-        exit(2);
+        exit(3);
     }
     transaction_details transactions[5];
     for (i = 0; i < 5; i ++)
@@ -1068,7 +1074,11 @@ void save()
     qsort(accounts, num_acc, sizeof(*accounts), SortByNum);
     FILE *fp = fopen("accounts.txt", "w");
     if(fp == NULL)
-        printf("Error: accounts.txt file not found");
+    {
+        printf("Error: accounts.txt file not found\nLatest transaction was not saved!\nQuitting the program.\n");
+        fclose(fp);
+        exit(2);
+    }
     int i;
     for(i = 0; i<num_acc; i++)
     {
@@ -1344,7 +1354,16 @@ void create_transaction_file(unsigned long long account_no)
     snprintf(filename, sizeof(filename), "%010llu.txt", account_no);
 
     FILE *fp = fopen(filename, "r");
-    if (!fp) fp = fopen(filename, "w");
+    if (!fp)
+    {
+        fp = fopen(filename, "w");
+        if(fp == NULL)
+        {
+            printf("Error creating file %s\nQuitting the program.\n", filename);
+            fclose(fp);
+            exit(3);
+        }
+    }
     fclose(fp);
 }
 
@@ -1355,10 +1374,11 @@ void saveTransaction(unsigned long long account_no, unsigned long long from, uns
 
     FILE* fp;
     fp = fopen(filename, "r");
-    if(!fp)
+    if (fp == NULL)
     {
-        printf("Error: %s file not found", filename);
-        return;
+        printf("Error opening file %s\nQuitting the program.\n", filename);
+        fclose(fp);
+        exit(3);
     }
     fp = fopen(filename, "a");
     if(fprintf(fp, "%llu %llu %.2lf\n", from, to, amount) < 0)

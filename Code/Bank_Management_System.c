@@ -155,7 +155,7 @@ void login()
             if(inv_p==5)
             {
                 printf("too many invalid passwords have been entered\nQuitting the program");
-                exit(3);
+                exit(4);
             }
         }
         else
@@ -169,7 +169,7 @@ void login()
     if(inv_u==5)
     {
         printf("too many invalid usernames have been entered\nQuitting the program");
-        exit(3);
+        exit(4);
     }
 
     fclose(fptr);

@@ -187,12 +187,8 @@ void load()
     fp = fopen("accounts.txt", "r");
     if(fp == NULL)
     {
-<<<<<<< Updated upstream
-        printf("Error: accounts.txt file not found");
-=======
         printf("Error: accounts.txt file not found\nQuitting the program.\n");
         fclose(fp);
->>>>>>> Stashed changes
         exit(2);
     }
 

@@ -26,7 +26,7 @@ typedef struct
 typedef struct
 {
     unsigned long long from, to;
-    float amount;
+    double amount;
 } transaction_details;
 
 typedef struct
@@ -41,7 +41,6 @@ typedef struct
     char *name, *email, *phone;
     double balance;
     date date_opened;
-    transaction_details recent_transfers[5];
 } account;
 
 account** accounts = NULL;

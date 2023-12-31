@@ -230,8 +230,13 @@ void query_search()
     {
         do
         {
-            printf("Enter account number: ");
+            printf("Enter account number [enter -1 to return to menu]: ");
             account_no = read_account_no();
+            if (account_no == 1)
+            {
+                printf("Returning to Main Menu.\n");
+                return;
+            }
             if (account_no == 0)
                 printf("Invalid Account Number!\n");
         }
@@ -540,8 +545,13 @@ void modify_acc()
     {
         do
         {
-            printf("Enter account number: ");
+            printf("Enter account number [enter -1 to return to menu]: ");
             account_no = read_account_no();
+            if (account_no == 1)
+            {
+                printf("Returning to Main Menu.\n");
+                return;
+            }
             if (account_no == 0)
                 printf("Invalid Account Number!\n");
         }
@@ -848,8 +858,13 @@ void transfer()
     {
         do
         {
-            printf("Enter account number of the sender: ");
+            printf("Enter account number of the sender [enter -1 to return to menu]: ");
             account_no_sender = read_account_no();
+            if (account_no_sender == 1)
+            {
+                printf("Returning to Main Menu.\n");
+                return;
+            }
             if (account_no_sender == 0)
                 printf("Invalid Account Number!\n");
         }
@@ -865,8 +880,13 @@ void transfer()
     {
         do
         {
-            printf("Enter account number of the receiver: ");
+            printf("Enter account number of the receiver [enter -1 to return to menu]: ");
             account_no_receiver = read_account_no();
+            if (account_no_receiver == 1)
+            {
+                printf("Returning to Main Menu.\n");
+                return;
+            }
             if (account_no_receiver == 0)
                 printf("Error: Invalid Account Number!\n");
             else if (account_no_receiver == account_no_sender)

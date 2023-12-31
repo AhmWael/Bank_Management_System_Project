@@ -26,7 +26,7 @@ typedef struct
 typedef struct
 {
     unsigned long long from, to;
-    double amount;
+    float amount;
 } transaction_details;
 
 typedef struct

@@ -65,8 +65,6 @@ void menu();
 account *constAcc(unsigned long long account_no, char *name, char *email, double balance, char *phone, date date_opened);
 void printAccount(account *a);
 void distAcc(account *p);
-date *constDate(int month, int year);
-void setDate(account *a, int month, int year);
 account *decodeText(char *line);
 void unload();
 
@@ -417,13 +415,6 @@ void add()
     }
     while(flag);
 
-    /* printf("enter balance:");
-     do
-     { bal=readAmount();
-     if(bal==-1)
-         printf("please only enter digits\nEnter again:");
-     }while(bal==-1);*/
-
     printf("\nEnter phone number: ");
     do
     {
@@ -453,7 +444,6 @@ void add()
     free(email);
     free(phone);
     free(name);
-
 }
 
 
@@ -1323,21 +1313,6 @@ void distAcc(account *p)
     free(p);
 }
 
-date *constDate(int month, int year)
-{
-    date *d = malloc(sizeof(date));
-    d->month = month;
-    d->year = year;
-    return d;
-}
-
-void setDate(account *a, int month, int year)
-{
-    date *d = constDate(month, year);
-    a->date_opened = *d;
-    free(d);
-}
-
 account* decodeText(char* line)
 {
     unsigned long long accNum = strtoull(strtok(line, ","), NULL, 10);
@@ -1485,7 +1460,6 @@ char *readPhone()
 
     strcpy(result_p,inputs);
 
-
     return result_p;
 }
 
@@ -1545,6 +1519,7 @@ double readAmount()
 
     return ans;
 }
+
 bool cont_dig(char *x)
 {
     int i=0;
@@ -1555,6 +1530,7 @@ bool cont_dig(char *x)
     }
     return 0;
 }
+
 bool cont_spec(char *x, int mode)
 {
     if(mode == 1){
@@ -1579,6 +1555,7 @@ bool cont_spec(char *x, int mode)
         return 0;
     }
 }
+
 char *readEmail()
 {
     char buffer[50];
@@ -1670,7 +1647,7 @@ int SortByNum(const void *a,const void *b)
 
 int SortByName(const void *a,const void *b)
 {
-// Cast pointers to account** before dereferencing and accessing the name field (dereferencing is getting at the pointed value)
+    // Cast pointers to account** before dereferencing and accessing the name field (dereferencing is getting at the pointed value)
     return strcmp((*(account**)a)->name, (*(account**)b)->name);
 }
 

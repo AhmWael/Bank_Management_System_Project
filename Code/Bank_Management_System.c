@@ -187,7 +187,7 @@ void load()
     if(!fp)
     {
         printf("Error: accounts.txt file not found");
-        return;
+        exit(2);
     }
 
     char record[100];
@@ -198,8 +198,6 @@ void load()
         if (record[0] == '\n') continue; //skip empty line
         num_acc++;
     }
-
-    //printf("num of acc = %d\n", num_acc);  //for testing delete later
 
     accounts = (account**)malloc((num_acc) * sizeof(account*));
 

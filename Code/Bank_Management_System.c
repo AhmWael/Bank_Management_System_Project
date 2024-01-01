@@ -499,12 +499,12 @@ void delete_account()
                             }
                             distAcc(accounts[i]);
                             num_acc--;
-                            accounts = realloc(accounts, num_acc * sizeof(account*));
                             int j;
                             for(j = i; j < num_acc; j++)
                             {
                                 accounts[j] = accounts[j+1];
                             }
+                            accounts = realloc(accounts, num_acc * sizeof(account*));
                             printf("\nAccount deleted Successfully.\n");
                             save();
                             break;
@@ -694,9 +694,13 @@ void withdraw()
     int flag=0;
     do
     {
-        printf("\nEnter account number\nAccount Number: ");
+        printf("\nEnter account number\nAccount Number [enter -1 to return to menu]: ");
         accNum = readAccountNo();
-
+        if (accNum == 1)
+            {
+                printf("Returning to Main Menu.\n");
+                return;
+            }
         if (accNum == 0)
             printf("Invalid Account Number!\n");
     }
@@ -775,9 +779,13 @@ void deposit()
     unsigned long long accNum;
     do
     {
-        printf("\nEnter account number\nAccount Number: ");
+        printf("\nEnter account number\nAccount Number [enter -1 to return to menu]: ");
         accNum = readAccountNo();
-
+        if (accNum == 1)
+            {
+                printf("Returning to Main Menu.\n");
+                return;
+            }
         if (accNum == 0)
             printf("Invalid Account Number!\n");
     }

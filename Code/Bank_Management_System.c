@@ -657,6 +657,8 @@ void modify_acc()
                     confirm = readInteger();
                     if (confirm == 1)
                     {
+                        free(accounts[acc_index]->phone);
+                        accounts[acc_index]->phone = malloc(strlen(str) + 1);
                         strcpy(accounts[acc_index]->phone, str);
                         save();
                         printf("Mobile changed Successfully!\n");

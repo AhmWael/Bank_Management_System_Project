@@ -72,7 +72,7 @@ void create_transaction_file(unsigned long long account_no);
 void saveTransaction(unsigned long long account_no, unsigned long long from, unsigned long long to, double amount);
 /****Input Validation Functions***/
 int readInteger();
-unsigned long long read_account_no();
+unsigned long long readAccountNo();
 bool cont_dig(char *x);
 bool cont_spec(char *x, int mode);
 char *readPhone();
@@ -229,7 +229,7 @@ void query_search()
         do
         {
             printf("Enter account number [enter -1 to return to menu]: ");
-            account_no = read_account_no();
+            account_no = readAccountNo();
             if (account_no == 1)
             {
                 printf("Returning to Main Menu.\n");
@@ -356,7 +356,7 @@ void add()
     printf("Enter account number:");
     do
     {
-        x=read_account_no();
+        x=readAccountNo();
 
         if(x==0)
         {
@@ -452,12 +452,12 @@ void delete_account()
     printf("Enter account number [enter -1 to return to menu]: ");
 
     unsigned long long input;
-    input = read_account_no();
+    input = readAccountNo();
 
     while(input == 0)
     {
         printf("Invalid Input!\nEnter valid account number(10 digits)[enter -1 to return to menu]: ");
-        input = read_account_no();
+        input = readAccountNo();
     }
 
     if(input == 1)
@@ -536,7 +536,7 @@ void modify_acc()
         do
         {
             printf("Enter account number [enter -1 to return to menu]: ");
-            account_no = read_account_no();
+            account_no = readAccountNo();
             if (account_no == 1)
             {
                 printf("Returning to Main Menu.\n");
@@ -695,7 +695,7 @@ void withdraw()
     do
     {
         printf("\nEnter account number\nAccount Number: ");
-        accNum = read_account_no();
+        accNum = readAccountNo();
 
         if (accNum == 0)
             printf("Invalid Account Number!\n");
@@ -776,7 +776,7 @@ void deposit()
     do
     {
         printf("\nEnter account number\nAccount Number: ");
-        accNum = read_account_no();
+        accNum = readAccountNo();
 
         if (accNum == 0)
             printf("Invalid Account Number!\n");
@@ -849,7 +849,7 @@ void transfer()
         do
         {
             printf("Enter account number of the sender [enter -1 to return to menu]: ");
-            account_no_sender = read_account_no();
+            account_no_sender = readAccountNo();
             if (account_no_sender == 1)
             {
                 printf("Returning to Main Menu.\n");
@@ -871,7 +871,7 @@ void transfer()
         do
         {
             printf("Enter account number of the receiver [enter -1 to return to menu]: ");
-            account_no_receiver = read_account_no();
+            account_no_receiver = readAccountNo();
             if (account_no_receiver == 1)
             {
                 printf("Returning to Main Menu.\n");
@@ -961,13 +961,13 @@ void report()
     int i, tries_left = 5;
     printf("You must enter a correct account number within a maximum of 5 tries.\n");
     printf("Enter account number: ");
-    acc_no = read_account_no();
+    acc_no = readAccountNo();
     while((acc_no == 0) && (tries_left > 0))
     {
         tries_left --;
         printf("Invalid input!\nYou have %d tries left.\n", tries_left);
         printf("Enter valid account number(10 digits): ");
-        acc_no = read_account_no();
+        acc_no = readAccountNo();
     }
     if (tries_left == 0)
     {
@@ -1403,7 +1403,7 @@ int readInteger()
     return ans;
 }
 
-unsigned long long read_account_no()
+unsigned long long readAccountNo()
 {
     char buffer[30];
     fgets(buffer, 29, stdin);

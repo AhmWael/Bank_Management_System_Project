@@ -38,7 +38,7 @@ This **Bank Management System** is a C programming project developed as part of 
 ## How to Run
 1. Clone the repository:
 ```bash
- git clone https://github.com/your-username/bank-management-system.git
+ git clone https://github.com/AhmWael/Bank_Management_System_Project.git
 ```
 2. Navigate to the project directory
 ```bash
